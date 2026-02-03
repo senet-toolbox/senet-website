@@ -1,0 +1,184 @@
+{#hooks-overview}
+
+# Hooks
+
+There are two vairations of Hooks in Vapor, one is based on the router, and the other is based on the lifecycle of components or pages.
+
+- Router Hooks
+
+- Lifecycle Hooks
+
+{#router-hooks}
+
+## Router Hooks
+
+Router Hooks are a powerful tool for handling complex route management. They work similarly to Layouts in Vapor.
+
+Hooks allow you to create a hierarchy of routes that can be nested and called in a flexible way.
+Each Hooks is a function call, that returns a HookContext struct, which contains the current route path, and the current route params.
+
+```zig
+const Vapor = @import("vapor");
+pub fn registerHooks() !void {
+    try Vapor.registerHook("/app", appHook, .before);
+    try Vapor.registerHook("/app/about", aboutHookAfter, .after);
+    try Vapor.registerHook("/app/about", aboutHookLeave, .leave);
+}
+
+pub fn appHook(ctx: Vapor.HookContext) !void {
+    Vapor.print("App Hook called BEFORE page load ({s})", .{ctx.to_path});
+}
+pub fn aboutHookAfter(ctx: Vapor.HookContext) !void {
+    Vapor.print("App About Hook called AFTER page load ({s})", .{ctx.to_path});
+}
+pub fn aboutHookLeave(ctx: Vapor.HookContext) !void {
+    Vapor.print("App About Hook called on route LEAVE ({s})", .{ctx.to_path});
+}
+```
+
+The above will be called in the following order:
+
+![Hooks](/assets/hooks.svg)
+
+{#hook-context}
+
+### HookContext
+
+`HookContext` is a struct that contains the current route path, and the current route params.
+
+```zig
+pub const HookContext = struct {
+    from_path: []const u8,
+    to_path: []const u8,
+    params: std.StringHashMap([]const u8),
+    query: std.StringHashMap([]const u8),
+};
+```
+
+Every framework has its own way of defining layouts. Vapor uses a explicit functional approach, you can register a layout
+anywhere in your codebase.
+
+{#register-hook}
+
+### registerHook([]const u8, HookFn, HookType)
+
+`HookFn` is a function that takes a `ctx: HookContext` struct as an argument, and can be used within the hook call.
+`HookType` is an enum type, that is used to determine when the hook should be called.
+
+{#lifecycle-hooks}
+
+## Lifecycle Hooks
+
+Lifecycle Hooks are a powerful tool for handling lifecycle components or pages. They work similarly to other frameworks, but are more flexible.
+
+{#component-hooks}
+
+### Component Hooks
+
+- **mounted** runs once the component is mounted after the entire DOM has been rendered.
+
+- **created** runs every time the component is created, during the rendering of the DOM.
+
+- **updated** runs every time the component is updated, during the rendering of the DOM.
+
+- **destroyed** runs every time the component is destroyed, during the rendering of the DOM.
+
+```zig
+fn mount() void {
+    Vapor.print("Mounted", .{});
+}
+
+fn render() void {
+    Hooks(.{ .mounted = mount })({
+        // ...
+    });
+}
+```
+
+{#tree-hooks}
+
+### Tree Hooks
+
+- onEnd
+
+- onCommit
+
+{#onend}
+
+### OnEnd
+
+`onEnd` is a function that takes a callback function as an argument, and will run the callback after the entire tree has been rendered.
+
+onEnd is useful in scenarios in which you want to inject components, or mutate the DOM after the initial tree has been rendered. As you may
+have noticed, every documentation page, has a set of Numbered Boxes on the right side. These are injected after generating the initial content page.
+
+After the initial render, we query all the Heading components, by type, and then inject a Box component at the Heading positions, like so:
+
+```zig
+pub var boxes: []BoxNumber = undefined;
+// var bounds: Vapor.lib.Bounds = undefined;
+const BoxNumber = struct {
+    id: []const u8,
+    number: usize,
+    bounds: Vapor.lib.Bounds = .{},
+    active: bool = false,
+};
+
+pub fn initBoxes() void {
+    boxes = Vapor.lib.frame_arena.getRouteAllocator().alloc(BoxNumber, 0) catch unreachable;
+    const ids = Vapor.queryComponentIds(.Heading) catch unreachable;
+    boxes = Vapor.lib.frame_arena.getRouteAllocator().alloc(BoxNumber, ids.len) catch unreachable;
+    for (ids, 0..) |id, i| {
+        const bounds = Vapor.getBoundingClientRect(id) orelse unreachable;
+        const box_id = std.fmt.allocPrint(Vapor.lib.frame_arena.getRouteAllocator(), "box-{d}", .{i}) catch unreachable;
+        boxes[i] = .{ .id = box_id, .number = i, .bounds = bounds };
+    }
+}
+
+fn goto(url: []const u8) void {
+    Vapor.onEnd(initBoxes); // This will triger at the end of the current cycle
+    Vapor.Kit.navigate(url);
+}
+
+```
+
+This is a very powerful feature, since now we can inject elements based on current context, this also occurs during reconciliation, so before
+the DOM is committed to the browser, we are querying from the virtual tree directly. This is not allowed in traditional frameworks.
+
+This also makes Vapor agnostic to the target renderer, instead of bridging to the DOM to query or to objc to query component information, we
+can query the virtual tree that is generated by Vapor.
+
+{#oncommit}
+
+### OnCommit
+
+`onCommit` is a function that takes a callback function as an argument, and will run the callback after the virtual DOM has been generated.
+
+This is useful for when we want to parse the virtual tree, and perform some action based on the state of the tree.
+
+The commit callbacks will only be called once, per render cycle, this means you cannot recursivley call `onCommit` from within the callback.
+
+```zig
+const Vapor = @import("vapor");
+
+fn mount() void {
+    Vapor.onCommit(addTextComponent);
+}
+
+fn addTextComponent() void {
+    Text("Hello World").font(24, 700, .red).close();
+    Vapor.cycle();
+}
+```
+
+There are 4 stages of Vapor's lifecycle.
+
+- Idle
+
+- Generating
+
+- Commiting
+
+- Applying
+
+During the commiting stage, the onCommit callbacks will be called in the order they were registered.

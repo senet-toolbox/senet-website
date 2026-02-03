@@ -1,0 +1,102 @@
+<svg viewBox="-20 -20 668 419" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:var(--gradient_start_0stop_color); stop-opacity:1" />
+      <stop offset="100%" style="stop-color:var(--gradient_start_100stop_color); stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:var(--gradient_end_0stop_color); stop-opacity:1" />
+      <stop offset="100%" style="stop-color:var(--gradient_end_100stop_color); stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <style>
+    .chain-link {
+      stroke-width: 5;
+      /* CRITICAL FIX: Changed fill to 'none' so the draw effect works correctly */
+      fill: none; 
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    @keyframes draw-link-top {
+      0% { stroke-dashoffset: 829; }
+      33.3% { stroke-dashoffset: 0; }
+      75% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: 829; }
+    }
+    @keyframes draw-loop-bl {
+      0% { stroke-dashoffset: 261; }
+      33.3% { stroke-dashoffset: 0; }
+      75% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: 261; }
+    }
+    @keyframes draw-link-bottom {
+      0%, 16.7% { stroke-dashoffset: 825; }
+      50% { stroke-dashoffset: 0; }
+      75% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: 825; }
+    }
+    @keyframes draw-loop-tr {
+      0%, 16.7% { stroke-dashoffset: 257; }
+      50% { stroke-dashoffset: 0; }
+      75% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: 257; }
+    }
+    
+    /* NEW: More dynamic, "bouncy" pulse animation */
+    @keyframes pulse {
+      0%, 66.7% { transform: scale(1); }
+      70.8% { transform: scale(1.1); }   /* Overshoot */
+      72.8% { transform: scale(0.98); }  /* Bounce back */
+      75%, 100% { transform: scale(1); } /* Settle */
+    }
+
+    #link-top {
+      stroke: url(#gradient1);
+      stroke-dasharray: 829;
+      stroke-dashoffset: 829;
+      animation: draw-link-top 6s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+    }
+    #loop-bl {
+      stroke: url(#gradient1);
+      stroke-dasharray: 261;
+      stroke-dashoffset: 261;
+      animation: draw-loop-bl 6s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+    }
+    #link-bottom {
+      stroke: url(#gradient2);
+      stroke-dasharray: 825;
+      stroke-dashoffset: 825;
+      animation: draw-link-bottom 6s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+    }
+    #loop-tr {
+      stroke: url(#gradient2);
+      stroke-dasharray: 257;
+      stroke-dashoffset: 257;
+      animation: draw-loop-tr 6s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+    }
+    #link-group-1, #link-group-2 {
+      transform-origin: center;
+      animation: pulse 6s ease-in-out infinite;
+      filter: url(#glow);
+    }
+  </style>
+
+  <g id="link-group-1">
+    <path id="loop-bl" class="chain-link" d="M66.5245 10.8759L129.14 70.5418C117.728 76.2582 107.016 83.6863 97.42 92.8304C87.8238 101.974 80.0284 112.182 74.0294 123.056L11.4136 63.3904C-3.80483 48.889 -3.80422 25.3767 11.4136 10.8759C26.6314 -3.625 51.3061 -3.62558 66.5245 10.8759Z"/>
+    <path id="link-top" class="chain-link" d="M357.944 164.441C373.163 178.943 373.162 202.455 357.944 216.956C342.726 231.457 319 229.5 302.833 216.956L237.285 154.495C216.302 134.501 182.281 134.501 161.298 154.495C140.315 174.49 140.315 206.907 161.298 226.902L246.094 307.702C199.475 324.301 144.928 314.74 107.44 279.018C56.2507 230.24 56.2515 151.156 107.44 102.378C158.071 54.1329 239.819 53.6061 291.128 100.801L291.143 100.787L357.944 164.441Z"/>
+  </g>
+  <g id="link-group-2">
+    <path id="link-bottom" class="chain-link" d="M227.682 164.441L291.143 224.912C312.126 244.907 348.017 246.896 369 226.902C389.983 206.907 388.112 172.5 367.129 152.506L282.334 71.7054C328.953 55.1065 383.499 64.6671 420.987 100.389C472.177 149.167 472.176 228.252 420.987 277.029C369.799 325.806 286.804 325.807 235.614 277.029L172.571 216.956C157.353 202.454 157.353 178.942 172.571 164.441C187.789 149.94 210.5 150.5 227.682 164.441Z"/>
+    <path id="loop-tr" class="chain-link" d="M461.476 368.124C476.694 382.626 501.369 382.625 516.586 368.124C531.804 353.623 531.805 330.111 516.586 315.61L453.971 255.944C447.972 266.818 440.176 277.026 430.58 286.17C420.984 295.314 410.272 302.742 398.86 308.458L461.476 368.124Z"/>
+  </g>
+</svg>
