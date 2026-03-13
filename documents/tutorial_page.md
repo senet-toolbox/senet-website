@@ -20,7 +20,7 @@ By the end, you'll have a working game and a solid understanding of Vapor's fund
 
 Before starting, make sure you have Vapor installed:
 
-%curl -sSL https://raw.githubusercontent.com/tether-labs/metal/main/install.sh | bash
+%curl -sSL https://raw.githubusercontent.com/senet-toolbox/metal/main/install.sh | bash
 
 %metal create vapor tictactoe
 

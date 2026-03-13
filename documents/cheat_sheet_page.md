@@ -105,40 +105,6 @@ fn render() void {
 }
 ```
 
-### Signal-Based State (Explicit Reactivity)
-
-```zig
-const Signal = Vapor.Signal;
-
-var counter: Signal(u32) = undefined;
-
-fn init() void {
-    counter.init(0);
-}
-
-fn increment() void {
-    counter.increment();  // Auto-triggers UI update
-}
-
-fn render() void {
-    Text(counter.get()).end();
-}
-```
-
-### Signal Methods
-
-| Method          | Description             |
-| --------------- | ----------------------- |
-| `.init(value)`  | Initialize with value   |
-| `.get()`        | Get current value       |
-| `.set(value)`   | Set new value           |
-| `.increment()`  | Increment numeric value |
-| `.decrement()`  | Decrement numeric value |
-| `.toggle()`     | Toggle boolean value    |
-| `.append(item)` | Append to array         |
-
----
-
 {#component-patterns}
 
 ## Component Patterns
@@ -276,7 +242,7 @@ Box()
             .background = .palette(.background),
             .border = .simple(.palette(.border_color)),
         },
-    })({ /* children */ });
+    }).children({ /* children */ });
 ```
 
 ### Stack (Vertical Container)
@@ -448,6 +414,16 @@ Link(.{ .url = "https://vapor.dev" })
     });
 ```
 
+### RedirectLink
+
+RedirectLink is a special link that will redirect the user to another route.
+
+```zig
+RedirectLink(.{ .url = "/about" }).children({
+    Text("go to about").end();
+});
+```
+
 ### Image
 
 ```zig
@@ -481,6 +457,164 @@ List()
     });
 ```
 
+### Spacer
+
+```zig
+Spacer(32).end();
+```
+
+### Svg
+
+Svg embeds the svg string into the tree, this is useful for small svg elements, but is not recommended for large svg files.
+You can use the `.override` flag to force the svg to be inserted into the tree.
+
+```zig
+Svg(.{ .svg = svg_string }).end();
+```
+
+### Graphic
+
+Graphic is essentially the same as Svg, except it will lazy load the svg, this is especially useful for large svg files.
+
+```zig
+Graphic(.{ .src = "/assets/logo.svg" }).end();
+```
+
+### Section
+
+```zig
+Stack()
+    .spacing(8)
+    .width(.percent(100))
+    .layout(.center)
+    .children({
+        Text("Section 1").font(24, 700, .palette(.text_color)).end();
+        Section().children({
+            Text("Section 2").font(24, 700, .palette(.text_color)).end();
+            Text("Section 3").font(24, 700, .palette(.text_color)).end();
+        });
+    });
+```
+
+### Form
+
+```zig
+Form(onSubmit, .{... args ...})
+    .children({
+        TextField(.string)
+            .bind(&email)
+            .placeholder("Email")
+            .width(.percent(100))
+            .end();
+        TextField(.string)
+            .bind(&password)
+            .placeholder("Password")
+            .width(.percent(100))
+            .end();
+        Button(submit)
+            .children({
+                Text("Submit").end();
+            });
+    });
+```
+
+### Video
+
+```zig
+Video(.{
+    .src = "/assets/video.mp4",
+    .autoplay = true,
+    .muted = true,
+    .loop = true,
+    .lazy = true,
+}).end();
+```
+
+### HTML
+
+Embeds the html or text directly.
+
+```zig
+Html(
+    \\<strong style="color: rgb(var(--tint))">THIS</strong>
+    \\entire website, is just a mere
+    \\<strong style="color: rgb(var(--tint))"><i>246kb</i></strong>
+    \\.
+).end();
+```
+
+### Anchor
+
+Anchors allow you to position elements relative to other elements (tooltips, popovers, dropdowns). The system uses an anchor name to link a source element to a positioned target.
+
+```zig
+const anchor_name = "myAnchor";
+Anchor(anchor_name)
+    .anchorPlacement(.top)
+    .children({
+        Text("My Anchor").end();
+    });
+
+Box()
+    .onEventCtx(.pointerenter, onHover, .{tooltip})
+    .onEventCtx(.pointerleave, onLeave, .{tooltip})
+    .anchorSource(anchor_name)
+    .children({
+    @call(.auto, trigger, args);
+});
+
+```
+
+### Code
+
+```zig
+const Code = Vapor.Code;
+
+Code("const x = 42;").end();
+Code(404).end();
+
+// Styled
+Code("npm install vapor")
+    .padding(.tblr(4, 4, 8, 8))
+    .background(.palette(.surface))
+    .border(.round(.palette(.border_color), .all(4)))
+    .fontSize(14)
+    .end();
+```
+
+### Null
+
+This inserts a element, but does not render it, for example if you want to conditionally render an elemwent, since
+the tree and identification of the element in the ui is depth and breadth based, removing the element will effect the ids
+for example [A, B, C] will get [1,2,3] for ids, but if you remove B, the ids will be [1,2] and the tree will be [A,C]
+
+so now it looks like every element has shifted positions, this means that the all the elements will need to be rerendered.
+
+Using Null will prevent this by substituting the element with a ghost element, so then it is [A, Null, C] and the ids will be [1,2,3].
+
+But Nulls does not get inserted into the DOM.
+
+```zig
+Null().end();
+```
+
+`Null` is used is special circumstances, and is typically not needed. A simple solution to the above problem is to just have a wrapper element around the conditional element.
+
+```zig
+Box().children({
+    if (condition) {
+        Text("Hello").end();
+    }
+});
+
+// Instead of
+if (condition) {
+    Text("Hello").end();
+} else {
+    Null().end();
+}
+```
+
 ---
 
 {#styling-reference}
@@ -510,7 +644,7 @@ List()
 .width(.px(200))              // Fixed pixels
 .width(.percent(100))         // Percentage
 .width(.fit)                  // Fit content
-.width(.grow)                 // Flex grow
+.width(.expand)               // Flex expand
 .width(.full)                 // 100%
 .height(.px(100))
 .height(.percent(50))
@@ -520,6 +654,7 @@ List()
 .hw(.px(100), .px(200))       // height, width
 .size(.full)                  // width & height 100%
 .size(.square_px(100))        // Square 100x100
+.size(.hw(.px(100), .percent(100)))
 ```
 
 ### Spacing & Padding
@@ -531,6 +666,7 @@ List()
 .padding(.vertical(12))       // Top & bottom
 .padding(.tblr(10, 10, 20, 20)) // top, bottom, left, right
 .padding(.tb(12, 12))         // top, bottom
+.padding(.xy(12, 12))         // horizontal, vertical
 .margin(.all(8))
 .margin(.b(16))               // Bottom only
 .margin(.t(16))               // Top only
@@ -641,6 +777,7 @@ List()
 .scroll(.scroll_y())                   // Vertical scroll
 .scroll(.scroll_x())                   // Horizontal scroll
 .scroll(.none())                       // No scroll
+.scroll(.{ .x = .scroll, .y = .hidden }) // x scroll, y hidden
 ```
 
 ---
@@ -666,7 +803,7 @@ const button_style = Vapor.Style{
 };
 
 // Apply with .style()
-Button(action).style(&button_style)({
+Button(action).style(&button_style).children({
     Text("Click").end();
 });
 
@@ -682,6 +819,273 @@ fn mergedStyle() Vapor.Style {
         .visual = .{ .background = .hex("#FF0000") },
     });
 }
+```
+
+## Element IDs & CSS Classes
+
+### Custom IDs
+
+Use `.id()` to assign a unique identifier to an element. This is used for `ariaControls`, `scrollIntoView`, and DOM queries.
+
+```zig
+Box()
+    .id("main-content")
+    .children({
+        // ...
+    });
+
+// Later
+Vapor.scrollIntoView("main-content", .{ .block = .start });
+```
+
+### CSS Classes
+
+Use `.class()` or `.classFmt()` to assign CSS class names for external stylesheet integration or theme targeting.
+
+```zig
+Box()
+    .class("card-container")
+    .children({ /* ... */ });
+
+// Dynamic class name
+Box()
+    .classFmt("item-{d}", .{index})
+    .children({ /* ... */ });
+```
+
+---
+
+## Inline Styles
+
+For cases where you need to emit raw CSS (e.g., CSS properties not yet in Vapor's type system), use `.inlineStyle()` or `.inlineStyleStr()`.
+
+```zig
+// Formatted inline style
+Box()
+    .inlineStyle("grid-template-columns: repeat({d}, 1fr)", .{column_count})
+    .children({ /* ... */ });
+
+// Static inline style string
+Box()
+    .inlineStyleStr("clip-path: circle(50%)")
+    .children({ /* ... */ });
+```
+
+> **Note:** Prefer Vapor's typed style API when possible. Inline styles bypass the virtual DOM diffing and may have performance implications.
+
+---
+
+## Style Inheritance
+
+### inherit
+
+Use `.inherit()` to specify which style fields should be inherited from the parent's computed style.
+
+```zig
+Text("Inherited color")
+    .inherit(&.{ .text_color, .font_size })
+    .end();
+```
+
+### inheritHover
+
+Same as `.inherit()` but applies to the element's hover state, pulling from the parent's hover styles.
+
+```zig
+Box()
+    .inheritHover(&.{ .background, .text_color })
+    .children({ /* ... */ });
+```
+
+---
+
+## Visual Effects
+
+### Opacity
+
+```zig
+Box()
+    .opacity(0.5)
+    .children({ /* ... */ });
+
+// Disabled state pattern
+Button(action)
+    .opacity(if (disabled) 0.4 else 1.0)
+    .cursor(if (disabled) .default else .pointer)
+    .children({
+        Text("Submit").end();
+    });
+```
+
+### Blur
+
+```zig
+// Frosted glass effect
+Box()
+    .blur(10)
+    .background(.transparentize(.white, 0.2))
+    .children({ /* ... */ });
+```
+
+### Transform & Scale
+
+```zig
+// Static scale
+Icon(.arrow)
+    .scale(1.5)
+    .end();
+
+// Arbitrary transform
+Box()
+    .transform(.scaleDecimal(0.95))
+    .children({ /* ... */ });
+
+// Transform origin for animations
+Box()
+    .transformOrigin(.{ .x = .center, .y = .top })
+    .children({ /* ... */ });
+```
+
+### Outline
+
+```zig
+// Focus ring pattern
+TextField(.string)
+    .bind(&text)
+    .outline(.{ .color = .palette(.tint), .width = 2, .offset = 2 })
+    .end();
+```
+
+---
+
+## Multi-Column Layout
+
+Use `.columns()` to set a CSS multi-column layout on a container.
+
+```zig
+Box()
+    .columns(3)
+    .spacing(16)
+    .children({
+        for (articles) |article| {
+            Box().padding(.all(12)).children({
+                Text(article.title).bold().end();
+                Text(article.excerpt).end();
+            });
+        }
+    });
+```
+
+---
+
+## Aspect Ratio
+
+Lock an element to a specific aspect ratio.
+
+```zig
+Image(.{ .src = "/hero.jpg" })
+    .aspectRatio(.{ .width = 16, .height = 9 })
+    .width(.percent(100))
+    .end();
+
+// Square
+Box()
+    .aspectRatio(.{ .width = 1, .height = 1 })
+    .width(.px(200))
+    .background(.palette(.surface))
+    .children({ /* ... */ });
+```
+
+---
+
+## Edges
+
+The `.edges()` method applies a named edge style (defined in your theme or style system).
+
+```zig
+Box()
+    .edges("card-edges")
+    .children({ /* ... */ });
+```
+
+---
+
+## Conditional Visibility
+
+Use `.hidden()` to set `display: none` on an element based on a condition. Unlike conditional rendering with `if`, `.hidden()` keeps the element in the tree (preserving sibling IDs).
+
+```zig
+Box()
+    .hidden(should_hide)
+    .children({
+        Text("This may be hidden").end();
+    });
+```
+
+Compare with:
+
+```zig
+// Conditional rendering — removes element from tree
+if (!should_hide) {
+    Box().children({
+        Text("Conditionally rendered").end();
+    });
+}
+```
+
+---
+
+## White Space Control
+
+Control how whitespace is handled in text elements.
+
+```zig
+Text(code_snippet)
+    .whiteSpace(.pre)
+    .fontFamily("monospace")
+    .end();
+
+Text(long_paragraph)
+    .whiteSpace(.normal)
+    .end();
+```
+
+| Value       | Behavior                                       |
+| ----------- | ---------------------------------------------- |
+| `.normal`   | Collapses whitespace, wraps text (default)     |
+| `.nowrap`   | Collapses whitespace, no wrapping              |
+| `.pre`      | Preserves whitespace and line breaks           |
+| `.pre_wrap` | Preserves whitespace, allows wrapping          |
+| `.pre_line` | Collapses spaces, preserves line breaks, wraps |
+
+---
+
+## Background Layers
+
+For complex backgrounds with multiple visual layers (grids, dots, gradients stacked together):
+
+### Single Layer
+
+```zig
+Box()
+    .layer(.grid(14, 1, .palette(.grid_color)))
+    .children({ /* ... */ });
+
+Box()
+    .layer(.dot(0.5, 20, .white))
+    .children({ /* ... */ });
+```
+
+### Multiple Layers
+
+```zig
+Box()
+    .layers(&.{
+        .grid(14, 1, .palette(.grid_color)),
+        .dot(0.5, 20, .transparentize(.white, 0.3)),
+    })
+    .background(.palette(.background))
+    .children({ /* ... */ });
 ```
 
 ---
@@ -719,7 +1123,7 @@ fn handleLeave(_: *Vapor.Event) void {
 
 // Context events
 Box()
-    .onEventCtx(.pointerenter, handleHoverItem, item)
+    .onEventCtx(.pointerenter, handleHoverItem, .{item})
     .children({ /* ... */ });
 
 fn handleHoverItem(item: *Item, _: *Vapor.Event) void {
@@ -728,16 +1132,60 @@ fn handleHoverItem(item: *Item, _: *Vapor.Event) void {
 
 // Focus/Blur
 TextField(.string)
-    .onEventCtx(.focus, handleFocus, id)
-    .onEventCtx(.blur, handleBlur, id)
+    .onEventCtx(.focus, handleFocus, .{id})
+    .onEventCtx(.blur, handleBlur, .{id})
     .end();
+
+fn handleFocus(id: []const u8, _: *Vapor.Event) void {
+    // Do something
+}
+
+fn handleBlur(id: []const u8, _: *Vapor.Event) void {
+    // Do something
+}
+```
+
+### Draggable Elements
+
+Vapor includes a Draggable system for building drag-and-drop interactions. You bind a Draggable instance to a component, and it handles pointer events and position tracking.
+Basic Draggable
+
+```zig
+const Draggable = Vapor.Draggable;
+
+var drag_handle: Draggable = .{};
+
+fn render() void {
+    Box()
+        .ref(&drag_handle.element)
+        .createDraggable(&drag_handle)
+        .width(.px(100))
+        .height(.px(100))
+        .background(.palette(.tint))
+        .cursor(.grab)
+        .children({
+            Text("Drag me").end();
+        });
+}
+
+Box()
+    .onDragStart(handleDragStart)
+    .children({
+        Text("Draggable item").end();
+    });
+
+fn handleDragStart(evt: *Vapor.Event) void {
+    // Pointer down — drag initiated
+    std.log.debug("Drag started", .{});
+}
+
 ```
 
 ### Global Events
 
 ```zig
 fn mount() void {
-    Vapor.eventListener(.keydown, handleKeyPress);
+    _ = Vapor.addGlobalListener(.keydown, handleKeyPress);
 }
 
 fn handleKeyPress(evt: *Vapor.Event) void {
@@ -787,8 +1235,8 @@ fn destroy() void {
 }
 
 fn render() void {
-    Vapor.Static.HooksCtx(.mounted, mount, .{})({
-        Vapor.Static.HooksCtx(.destroy, destroy, .{})({
+    Vapor.HooksCtx(.mounted, mount, .{})({
+        Vapor.HooksCtx(.destroy, destroy, .{})({
             // Component content
             Text("Hello").end();
         });
@@ -845,6 +1293,7 @@ items.clearRetainingCapacity();
 Vapor provides a convenient wrapper around Zig's `std.array_list.Managed` that automatically uses the correct arena allocator.
 
 ### Creating Arrays
+
 ```zig
 const Vapor = @import("vapor");
 
@@ -860,6 +1309,7 @@ var todos: Vapor.Array(TodoItem) = Vapor.array(TodoItem, .persist);
 ### Array Methods
 
 `Vapor.Array(T)` is an alias for `std.array_list.Managed(T)`, so you get all standard ArrayList methods:
+
 ```zig
 var items = Vapor.array(Item, .persist);
 
@@ -890,14 +1340,15 @@ for (items.items, 0..) |item, i| {
 
 ### Choosing the Right Arena
 
-| Arena | Array Lifetime | Use Case |
-|-------|----------------|----------|
-| `.persist` | Entire session | User data, app state, settings |
-| `.view` | Until route change | Page-specific lists, search results |
-| `.frame` | Single render | Temporary filtering, sorting for display |
-| `.scratch` | Manual control | Advanced use cases |
+| Arena      | Array Lifetime     | Use Case                                 |
+| ---------- | ------------------ | ---------------------------------------- |
+| `.persist` | Entire session     | User data, app state, settings           |
+| `.view`    | Until route change | Page-specific lists, search results      |
+| `.frame`   | Single render      | Temporary filtering, sorting for display |
+| `.scratch` | Manual control     | Advanced use cases                       |
 
 ### Complete Example: Todo List with Dynamic Array
+
 ```zig
 const std = @import("std");
 const Vapor = @import("vapor");
@@ -906,6 +1357,7 @@ const Text = Vapor.Text;
 const Button = Vapor.Button;
 const ButtonCtx = Vapor.ButtonCtx;
 const TextField = Vapor.TextField;
+const TextFmt = Vapor.TextFmt;
 
 const TodoItem = struct {
     text: []const u8,
@@ -924,15 +1376,15 @@ pub fn init() void {
 
 fn addTodo() void {
     if (input_text.len == 0) return;
-    
+
     // Copy text to same arena as the array
     const text_copy = Vapor.arena(.persist).dupe(u8, input_text) catch return;
-    
+
     todos.append(.{
         .text = text_copy,
         .completed = false,
     }) catch return;
-    
+
     input_text = "";
 }
 
@@ -953,30 +1405,30 @@ fn render() void {
             .bind(&input_text)
             .placeholder("New todo...")
             .end();
-        
+
         Button(addTodo).children({
             Text("Add").end();
         });
-        
+
         // List - iterate with index for delete/toggle operations
         for (todos.items, 0..) |todo, i| {
             Box().layout(.x_between_center).children({
                 Text(todo.text)
                     .textDecoration(if (todo.completed) .line_through else .none)
                     .end();
-                
+
                 ButtonCtx(toggleTodo, .{i}).children({
                     Text(if (todo.completed) "Undo" else "Done").end();
                 });
-                
+
                 ButtonCtx(deleteTodo, .{i}).children({
                     Text("Delete").end();
                 });
             });
         }
-        
+
         // Count display
-        Text(Vapor.fmtln("{d} items", .{todos.items.len})).end();
+        TextFmt("{d} items", .{todos.items.len}).end();
     });
 }
 ```
@@ -986,6 +1438,7 @@ fn render() void {
 1. **Automatic allocator selection** - No need to manually get the allocator
 2. **Consistent lifetime semantics** - Arena type clearly indicates data lifetime
 3. **Less boilerplate** - One line instead of three
+
 ```zig
 // Without Vapor.array()
 const allocator = Vapor.arena(.persist);
@@ -998,17 +1451,18 @@ var todos = Vapor.array(TodoItem, .persist);
 ### Common Patterns
 
 **Filtering for display (use .frame):**
+
 ```zig
 fn render() void {
     // Create temporary filtered list just for this render
     var active_todos = Vapor.array(TodoItem, .frame);
-    
+
     for (todos.items) |todo| {
         if (!todo.completed) {
             active_todos.append(todo) catch continue;
         }
     }
-    
+
     // Render only active todos
     for (active_todos.items) |todo| {
         Text(todo.text).end();
@@ -1018,6 +1472,7 @@ fn render() void {
 ```
 
 **Page-specific data (use .view):**
+
 ```zig
 var search_results: Vapor.Array(SearchResult) = undefined;
 
@@ -1034,6 +1489,7 @@ fn performSearch(query: []const u8) void {
 ```
 
 **Persistent app state (use .persist):**
+
 ```zig
 var user_favorites: Vapor.Array(FavoriteItem) = undefined;
 var cart_items: Vapor.Array(CartItem) = undefined;
@@ -1048,6 +1504,7 @@ pub fn init() void {
 ### ⚠️ Important: Match Array and Item Arenas
 
 When storing strings or allocated data in an array, use the **same arena** for both:
+
 ```zig
 // ✅ Correct - both use .persist
 var todos = Vapor.array(TodoItem, .persist);
@@ -1060,8 +1517,8 @@ const text = Vapor.arena(.frame).dupe(u8, input) catch return;  // Freed after r
 todos.append(.{ .text = text }) catch return;  // Dangling pointer!
 ```
 
-
 ### Practical Example: When to Use Each Arena
+
 ```zig
 const std = @import("std");
 const Vapor = @import("vapor");
@@ -1082,7 +1539,7 @@ fn addTodo(input: []const u8) void {
 }
 
 // ============================================
-// VIEW ARENA - Lives until route change  
+// VIEW ARENA - Lives until route change
 // ============================================
 // Use for: Page-specific state, form data, temporary lists
 
@@ -1102,7 +1559,7 @@ fn loadPageData() void {
 fn render() void {
     // fmtln uses frame arena internally - perfect for display
     Text(Vapor.fmtln("You have {d} todos", .{todo_count})).end();
-    
+
     // This string only needs to exist during render
     const status = Vapor.fmtln("Page {d} of {d}", .{current_page, total_pages});
     Text(status).end();
@@ -1110,6 +1567,7 @@ fn render() void {
 ```
 
 ### Arena Decision Flowchart
+
 ```
 Is this data needed after render completes?
 ├── No → Use .frame (or Vapor.fmtln)
@@ -1405,10 +1863,10 @@ File.downloadFile("data.json", json_content, .@"application/json");
 | ---------------------------------------------------- | -------------------------------- |
 | `Component().children({ ... });`                     | Container with children          |
 | `Component().end();`                                 | Leaf element (no children)       |
-| `Component().style(&style)({ ... });`                | Apply style struct with children |
+| `Component().style(&style).children({ ... });`       | Apply style struct with children |
 | `.children({ ... })`                                 | Block for child elements         |
 | `ButtonCtx(fn, .{args})`                             | Button with context arguments    |
-| `.onEventCtx(.event, fn, ctx)`                       | Event handler with context       |
+| `.onEventCtx(.event, fn, .{args})`                   | Event handler with context       |
 | `Vapor.Static.HooksCtx(.mounted, fn, .{})({ ... });` | Lifecycle hook                   |
 | `for (items) \|item\| { ... }`                       | Loop over items                  |
 | `if (cond) { ... }`                                  | Conditional render               |
@@ -1527,3 +1985,72 @@ fn render() void {
     });
 }
 ```
+
+---
+
+{#persisted-text-and-unmanaged}
+
+## Text Persistence
+
+By default, `Text()` with slice values persists the string across frames using an internal string table. This prevents dangling pointers when the source data changes.
+
+### Unmanaged Text
+
+If you know the text source is stable (e.g., a comptime string literal), you can opt out of persistence for performance:
+
+```zig
+Text("Static string that never changes")
+    .unmanaged()
+    .end();
+```
+
+> **Warning:** Only use `.unmanaged()` when you're certain the text pointer remains valid across render frames.
+
+---
+
+{#component-lifecycle-summary}
+
+## Component Method Categories
+
+### Constructors (Create a new component)
+
+| Method                         | Returns Children? | Description                   |
+| ------------------------------ | ----------------- | ----------------------------- |
+| `Box()`                        | Yes               | Generic flex container        |
+| `Stack()`                      | Yes               | Vertical flex container       |
+| `Center()`                     | Yes               | Centered flex container       |
+| `Text(value)`                  | No                | Text display                  |
+| `TextFmt(fmt, args)`           | No                | Formatted text                |
+| `Number(value)`                | No                | Numeric display               |
+| `Label(text)`                  | No                | Static label text             |
+| `Code(value)`                  | No                | Monospace code text           |
+| `Html(text)`                   | No                | Raw HTML insertion            |
+| `Heading(level, text)`         | No                | Semantic heading (h1–h6)      |
+| `Button(callback)`             | Yes               | Button with handler           |
+| `ButtonCtx(callback, .{args})` | Yes               | Button with handler, and args |
+| `TextField(field_type)`        | No                | Text field with type          |
+| `TextArea()`                   | No                | Text area                     |
+| `Spacer(height (px))`          | No                | Simple Spacer                 |
+| `Image(opts)`                  | No                | Image element                 |
+| `Icon(token)`                  | No                | Icon from icon token set      |
+| `Svg(opts)`                    | No                | Inline SVG                    |
+| `Graphic(opts)`                | No                | Lazy-loaded SVG               |
+| `Spacer(val)`                  | No                | Fixed-height spacer           |
+| `Link(opts)`                   | Yes               | Internal navigation link      |
+| `RedirectLink(opts)`           | Yes               | External redirect link        |
+| `List()`                       | Yes               | List container                |
+| `ListItem()`                   | Yes               | List item                     |
+| `Section()`                    | Yes               | Intersection observer section |
+| `Form(fn, args)`               | Yes               | Form with submit handler      |
+| `Anchor(name)`                 | Yes               | Anchor positioning target     |
+| `Video(opts)`                  | No                | Video element                 |
+| `Null()`                       | No                | Ghost placeholder element     |
+
+### Terminators (Finalize the component)
+
+| Method           | Description                                            |
+| ---------------- | ------------------------------------------------------ |
+| `.end()`         | Finalize — required for all components                 |
+| `.children({ })` | Finalize with child block (containers only)            |
+| `.style(&s)`     | Apply style struct, then use `.children()` or `.end()` |
+| `.items(tuple)`  | Finalize with inline child tuple                       |
