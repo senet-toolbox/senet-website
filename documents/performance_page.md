@@ -2,7 +2,7 @@
 
 # Performance
 
-Performance, is a major concern in all of Tether. It is one of the core reasons why I chose Zig, and why I built Tether.
+Performance, is a major concern in all of Senet. It is one of the core reasons why I chose Zig, and why I built Senet.
 
 {#memory-speed-runtime}
 
@@ -13,7 +13,7 @@ Performance, is a major concern in all of Tether. It is one of the core reasons 
 ### Memory
 
 Vapor, is highley optimized for memory usage. While A Hello World example in debug mode is 2.2MB, in release mode
-this drops down to 28kb of memory.
+this drops down to 46kb of memory.
 
 **For context:**
 
@@ -23,7 +23,7 @@ this drops down to 28kb of memory.
 
 - Svelte runtime: ~5KB
 
-- **Vapor Hello World: 33KB** ✨
+- **Vapor Hello World: 46KB** ✨
 
 This documentation site, is originally 7MB, in release mode, it drops down to 150kb. a 40x reduction in memory usage.
 
@@ -60,14 +60,14 @@ Resulting in a lower memory footprint, and faster rendering.
 ## Default Mode
 
 By default, Vapor, will dedupe styles, reconcile pure nodes that are dirty, remove, update, and add nodes. Without the need for
-any state management, external dependencies, configuration or build flags. The point of Vapor and Tether as a whole, is to focus on your
+any state management, external dependencies, configuration or build flags. The point of Vapor and Senet as a whole, is to focus on your
 application, and not build systems or configuation.
 
 {#full-stack}
 
 ## The Full Stack
 
-Tether isn't just a frontend framework. Running a single
+Senet isn't just a frontend framework. Running a single
 command spins up:
 
 **Frontend (Vapor):**

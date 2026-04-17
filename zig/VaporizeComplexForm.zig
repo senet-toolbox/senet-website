@@ -3,10 +3,10 @@ const Vaporize = @import("vaporize");
 const Validation = Vaporize.Validation;
 const ValidationError = Vaporize.ValidationError;
 
-const Box = Vapor.Box;
+const Row = Vapor.Row;
 const Text = Vapor.Text;
 const Compiler = @import("../main.zig");
-const Select = @import("../components/Opaque.zig").Select;
+const Select = @import("../components/Select.zig").Select;
 const new = @import("../components/Select.zig").new;
 
 const Currency = enum { usd, eur };
@@ -89,7 +89,6 @@ fn onSubmit(form: CheckoutForm) void {
 const FormCheckout = Vaporize.Form(CheckoutForm);
 var login_form: FormCheckout = .{
     .on_submit = onSubmit,
-    .default_value = CheckoutForm{ .account = .{ .email = "vicrokx@gmail.com" } },
 };
 
 var country: Select(Country) = undefined;

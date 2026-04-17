@@ -6,20 +6,6 @@
 
 _"Vapor isn't trying to be React in Zig. It's showing what's possible when your framework disappears at compile time."_
 
-```jsx
-// JSX Frameworks
-function Counter() {
-  // useState hooks, batching, and magic
-  const [count, setCount] = useState(0);
-
-  function increment() {
-    setCount((c) => c + 1);
-  }
-
-  return <button onClick={increment}>{count}</button>;
-}
-```
-
 #### Vapor manages state for you
 
 Vapor keeps state throughout the entire lifecycle—navigation, re-renders, everything. No _context_, no _stores_, no _prop drilling_. Just **functions** and **simple** programming.
@@ -30,7 +16,8 @@ var count: i32 = 0;
 fn increment() void { count += 1; }
 
 fn Counter() void {
-    Button(increment).children({
+    // callback, .{ ..args.. }
+    Button(increment, .{}).children({
         Text(count).end();
     });
 }
@@ -38,11 +25,27 @@ fn Counter() void {
 
 @counter
 
+As opposed to the typical JS approach:
+
+```jsx
+// JSX Frameworks
+function Counter() {
+  // useState hooks, batching, and magic
+  const [count, setCount] = useState(0);
+
+  function increment() {
+    setCount((c) => c + 1);
+  }
+
+  return <button onClick={() => increment()}>{count}</button>;
+}
+```
+
 {#quickstart}
 
 ## Quickstart
 
-#### Build small blogs, to full-blown production apps, without installing a single dependency.
+#### Build small Blogs to full-blown production apps, without installing a single dependency.
 
 @video
 
@@ -56,9 +59,9 @@ fn Counter() void {
 
 ## Vapor is simple by nature
 
-- **Small bundle sizes** - _Hello World_ in only **28kb**, including router, hooks, reactivity, and more
-- **No special syntax** - just normal programming
-- **Powerful Styling** - `.layout(.center)`, `.grid(16, 1, .palette(.grid_color))`
+- **Bundle sizes that don't grow** — A hello world is 65KB (Brotli). A full Shadcn-style component library site with its own chart lib, data tables, dashboard templates, and kanban boards? 453KB. A Sentry/Supabase/Postman-scale dashboard? 379KB. Zero external dependencies for any of it.
+- **Back to the Basics** - Your components are Zig functions. Your state is variables. Your events are function calls. That's the whole API.
+- **Powerful Styling** - Styling is built into the component API, no CSS files or class strings needed.
 
 {#how-it-works}
 
@@ -69,7 +72,7 @@ Vapor compiles your Zig components into static HTML at build time. This is sent 
 
 **Client-Side Hydration**
 The browser also receives your compact _`vapor.wasm`_ binary, and a thin JS glue bridge. This WASM binary runs and **hydrates** the static HTML,
-seamlessly taking control of the page.
+seamlessly taking control of the page. These are both in sync, since they are generated from the same source code and engine.
 
 **Native Performance Runtime**
 From that point on, all UI updates, routing, and logic are handled directly by high-performance WebAssembly, not JavaScript, giving you a smooth, native-like feel in the browser.
@@ -81,17 +84,6 @@ From that point on, all UI updates, routing, and logic are handled directly by h
 ### Why Zig?
 
 Zig compiles to tiny, fast WebAssembly binaries.
-No garbage collector means predictable performance. And unlike Rust,
-Zig's syntax is straightforward.
+No garbage collector means predictable performance. And unlike Rust, Zig's syntax is straightforward.
 
-Just like some of you, I came from the Javascript world, 2 years ago I started writing Zig, and 1 year ago I started building Senet.
-
-Don't be afraid of the syntax, or the dreaded **Memory Management**, all will be explained, and you'll come to find that
-Vapor makes it easy to write performant, native-like UIs,
-with _minimal to no memory management._
-
-**A Note on Syntax**
-
-- `.end()` closes leaf elements (no children)
-- `.children({})` wraps elements that contain others
-- The `{}` block runs first, adding children before the parent closes
+Vapor makes it easy to write performant, native-like UIs, with _minimal to no memory management._

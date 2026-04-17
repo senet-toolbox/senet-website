@@ -277,7 +277,7 @@ const Instances = @import("instances.zig");
 var markdown: Instances.vaporizer.MarkDown(.{}) = .{};
 ```
 
-Since we compile to a single WASM binary, all vaporized content shares the same `Text`, `Box`, `ListItem` function calls. Memory scales logarithmically - ten markdown files don't cost ten times the memory.
+Since we compile to a single WASM binary, all vaporized content shares the same `Text`, `Row`, `ListItem` function calls. Memory scales logarithmically - ten markdown files don't cost ten times the memory.
 
 ---
 

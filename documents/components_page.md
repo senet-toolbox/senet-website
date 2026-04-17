@@ -44,7 +44,7 @@ Global Components take no reference to themselves, and instead just operate on t
 ```zig
 const std = @import("std");
 const Vapor = @import("vapor");
-const Box = Vapor.Box;
+const Row = Vapor.Row;
 const Text = Vapor.Text;
 const Button = Vapor.Button;
 
@@ -60,14 +60,14 @@ fn decrement() void {
 }
 
 pub fn render() void {
-    Box().layout(.center).spacing(16).padding(.all(20)).children({
-        Button(.{ .on_press = decrement }).children({
+    Row().layout(.center).spacing(16).padding(.all(20)).children({
+        Button(decrement, .{}).children({
             Text("-").fontSize(18).end();
         });
 
         Text(count).font(24, 700, .palette(.text_color)).end();
 
-        Button(.{ .on_press = increment }).children({
+        Button(increment, .{}).children({
             Text("+").fontSize(18).end();
         });
     });
@@ -122,9 +122,9 @@ to have seperate `count` data.
 const std = @import("std");
 const Vapor = @import("vapor");
 const Allocator = std.mem.Allocator;
-const Box = Vapor.Box;
+const Row = Vapor.Row;
 const Text = Vapor.Text;
-const ButtonCtx = Vapor.ButtonCtx;
+const Button = Vapor.Button;
 
 /// Counter component
 const Counter = @This();
@@ -139,16 +139,16 @@ fn decrement(counter: *Counter) void {
 }
 
 pub fn render(counter: *Counter) void {
-    Box().layout(.center).spacing(16).padding(.all(20)).children({
+    Row().layout(.center).spacing(16).padding(.all(20)).children({
 
-        // ButtonCtx lets us pass a context to the button, which is the Counter struct
-        ButtonCtx(decrement, .{counter}).children({
+        // Button lets us pass a context to the button, which is the Counter struct
+        Button(decrement, .{counter}).children({
             Text("-").fontSize(18).end();
         });
 
         Text(counter.count).font(24, 700, .palette(.text_color)).end();
 
-        ButtonCtx(increment, .{counter}).children({
+        Button(increment, .{counter}).children({
             Text("+").fontSize(18).end();
         });
     });
@@ -215,7 +215,7 @@ in Vapor.
 
 ```zig
 const Vapor = @import("vapor");
-const Box = Vapor.Box;
+const Row = Vapor.Row;
 const Button = Vapor.Button;
 
 pub fn Counter(comptime T: type, initial_value: T) type {
@@ -231,14 +231,14 @@ pub fn Counter(comptime T: type, initial_value: T) type {
         }
 
         pub fn render() void {
-            Box().layout(.center).spacing(16).padding(.all(20)).children({
-                Button(decrement).children({
+            Row().layout(.center).spacing(16).padding(.all(20)).children({
+                Button(decrement, .{}).children({
                     Text("-").fontSize(18).end();
                 });
 
                 Text(count).font(24, 700, .palette(.text_color)).end();
 
-                Button(increment).children({
+                Button(increment, .{}).children({
                     Text("+").fontSize(18).end();
                 });
             });
@@ -289,8 +289,8 @@ fn render() void {
 
 ```zig
 const Vapor = @import("vapor");
-const Box = Vapor.Box;
-const ButtonCtx = Vapor.ButtonCtx;
+const Row = Vapor.Row;
+const Button = Vapor.Button;
 
 pub fn Counter(comptime T: type, initial_value: T, multiplier: T) type {
     return struct {
@@ -305,16 +305,16 @@ pub fn Counter(comptime T: type, initial_value: T, multiplier: T) type {
         }
 
         pub fn render() void {
-            Box().layout(.center).spacing(16).padding(.all(20)).children({
-                // Again here we use ButtonCtx, not Button
-                ButtonCtx(multiNeg, .{multiplier}).children({
+            Row().layout(.center).spacing(16).padding(.all(20)).children({
+                // Again here we use Button, not Button
+                Button(multiNeg, .{multiplier}).children({
                     Text("-").fontSize(18).end();
                 });
 
                 Text(count).font(24, 700, .palette(.text_color)).end();
 
-                // We use ButtonCtx here so that we can pass the multiplier
-                ButtonCtx(multiPos, .{multiplier}).children({
+                // We use Button here so that we can pass the multiplier
+                Button(multiPos, .{multiplier}).children({
                     Text("+").fontSize(18).end();
                 });
             });
@@ -346,7 +346,7 @@ class Counter<T extends number> {
 
   render() {
     return (
-      <Box layout="center" spacing={16} padding={20}>
+      <Row layout="center" spacing={16} padding={20}>
         <Button onPress={this.decrement}>
           <Text fontSize={18}>-</Text>
         </Button>
@@ -356,7 +356,7 @@ class Counter<T extends number> {
         <Button onPress={this.increment}>
           <Text fontSize={18}>+</Text>
         </Button>
-      </Box>
+      </Row>
     );
   }
 }

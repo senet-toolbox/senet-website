@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Tether</title>
+  <meta charset="utf-8" />
+  <meta name="google-site-verification" content="12aR_338F0VaglKbfvPLczdZV_Ej6AVx9Ef7M4ULfLU" />
+  <meta name="description"
+    content="Tether website includes documentation on all three components Fabric, Tether, and Treehouse. As well as instructions on installation and use cases." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
+  <link rel="preload" href="/zig-out/bin/vapor.wasm" as="fetch" type="application/wasm" crossorigin />
+  <!-- <script src="https://unpkg.com/lucide@latest"></script> -->
+
+  <!-- Preconnect stays the same -->
+  <link href="https://fonts.googleapis.com" />
+  <link href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://cdn.jsdelivr.net" crossorigin />
+
+  <!-- Load fonts async with media trick -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap"
+    rel="stylesheet" media="print" onload="this.media='all'" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:wght@400;700&display=swap"
+    rel="stylesheet" media="print" onload="this.media='all'" />
+
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" as="style"
+    onload="this.rel='stylesheet'" />
+
+  <!-- Font Awesome - non-blocking -->
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style"
+    onload="this.rel='stylesheet'" />
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" as="style"
+    onload="this.rel='stylesheet'" />
+
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css"
+    as="style" onload="this.rel='stylesheet'" />
+
+  <!-- Fallback for no-JS -->
+  <noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" />
+  </noscript>
+
+  <script type="module" src="/web/wasi_obj.js"></script>
+  <!-- <script type="module" src="/web/bundle.min.js"></script> -->
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Montserrat;
+      font-weight: 400;
+      height: 100vh;
+      width: 100%;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      background-color: rgba(var(--background));
+      color: rgb(var(--text_color));
+      transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+      scrollbar-width: none;
+      /* Firefox */
+      -ms-overflow-style: none;
+      /* IE/Edge */
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-scrollbar: display: none;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      /* Chrome, Safari, Opera */
+      margin: 0;
+    }
+
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      line-height: 1.5;
+      font-size-adjust: 0.5;
+    }
+
+    textarea {
+      line-height: 1.5;
+      font-size-adjust: 0.5;
+    }
+
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    input[type="file"]::file-selector-button {
+      background: transparent;
+      color: transparent;
+      border: none;
+    }
+
+    input:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px transparent inset;
+      -webkit-text-fill-color: inherit;
+      caret-color: inherit;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
+    /* Basic sidebar styling */
+    .onthispage a {
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    /* This is the class we will toggle */
+    .onthispage a.active {
+      color: dodgerblue;
+      font-weight: bold;
+      transform: scale(1.1);
+    }
+
+    .stats {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 14px;
+      z-index: 10000;
+      /* background-color: rgba(var(--background)); */
+      background-color: rgb(var(--background));
+      background-image: radial-gradient(circle, rgb(var(--text_color)) 0.5px, transparent 0px);
+      background-size: 20px 20px;
+      background-position: center center;
+      border-width: 1px;
+      border-style: solid;
+      border-color: rgb(var(--text_color));
+      box-shadow: 4px 4px 0px 0px rgb(var(--text_color));
+      text-decoration: none;
+      color: rgb(var(--text_color));
+    }
+
+    .reload-indicator {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 6px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      font-family: system-ui, sans-serif;
+      font-size: 14px;
+      z-index: 99999;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .reload-indicator.visible {
+      display: flex;
+    }
+
+    .reload-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid #333;
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="/static/style_variables.css" />
+  <link rel="stylesheet" href="/static/login/style.css" />
+</head></head>
+
+<body>
+  <div class="stats" id="stats">
+    FPS: <span id="fps">0</span><br />
+    Frame Time: <span id="frameTime">0</span>ms<br />
+    Render Time: <span id="renderTime">0</span>ms<br />
+    Total Render Time: <span id="totalRenderTime">0</span>ms<br />
+  </div>
+  <div id="reload-indicator" class="reload-indicator">
+    <div class="reload-spinner"></div>
+    <span>Reloading... <span id="reload-timer">0.0</span>s</span>
+  </div>
+  <div id="contents" style="display: contents"><div  id="Flex_S7ezG2-gk" class="lay_xCuuP3 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<div  id="Flex_nuQjl1-gk" class="lay_xm2IE3 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<div  id="Flex_KEh2u1-gk" class="lay_sRkjz pos_McpnX1 mapa_Ooany3 vis_oDvWj ">
+<button  id="CtxB_8MCzy-gk" class="lay_zMpGD3 pos_McpnX1 mapa_4hFg71 vis_jBCHY intr_0Gx8s1 ">
+<p  id="Text_kQgOj2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ltBTV ">Login</p>
+</button>
+<button  id="CtxB_5UCne1-gk" class="lay_zMpGD3 pos_McpnX1 mapa_4hFg71 vis_WeikF3 intr_wsSb23 ">
+<p  id="Text_xuC7A2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_rHSk4 ">Create Account</p>
+</button>
+</div>
+<div  id="Spac_bY8z5-gk" class="lay_53a2v1 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+</div>
+<div  id="Flex_re7fv-gk" class="lay_eKM8U pos_McpnX1 mapa_WM2Wg4 vis_d2yZ01 ">
+<div  id="Flex_GJp6o-gk" class="lay_28EIQ2 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<p  id="Text_CzK3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_05zW53 ">Login into Acorn</p>
+<p  id="Text_UmIxf-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_DoKr11 ">Login into your Acorn account.</p>
+</div>
+<div  id="Flex_khG312-gk" class="lay_xEnKo1 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<div  id="Flex_8JHzF2-gk" class="lay_f0VMy pos_Ch7rg3 mapa_CrkEb2 vis_hS77q ">
+<div  id="Hook_61yqJ1-gk">
+<label for="email_Flex_8JHzF2-gk"  id="Labe_fxEIq3-gk" style="transform: translateY(50%) scale(1); z-index: 0;" class="lay_1I8dE4 pos_KiAVN mapa_sgnwh vis_n390b3 ">Email</label>
+
+<input  id="email_Flex_8JHzF2-gk" class="lay_CQSaD pos_fFhoX3 mapa_GjRnP2 vis_79EnH2 "name=""type="email"placeholder=""></input>
+
+</div>
+</div>
+<div  id="Flex_tbcK93-gk" class="lay_f0VMy pos_Ch7rg3 mapa_CrkEb2 vis_hS77q ">
+<div  id="Hook_vMkzh-gk">
+<label for="password_Flex_tbcK93-gk"  id="Labe_y3gfe-gk" style="transform: translateY(50%) scale(1); z-index: 0;" class="lay_1I8dE4 pos_KiAVN mapa_sgnwh vis_n390b3 ">Password</label>
+
+<input  id="password_Flex_tbcK93-gk" class="lay_CQSaD pos_fFhoX3 mapa_GjRnP2 vis_79EnH2 "name=""></input>
+
+</div>
+</div>
+</div>
+<div  id="Flex_lfuo81-gk" class="lay_pU0mT pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<button  id="CtxB_N6uV44-gk" class="lay_zMpGD3 pos_McpnX1 mapa_kbVzx3 vis_SuCeE3 intr_3fjnS4 ">
+<p  id="Text_ywSc62-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_wszHN ">Login</p>
+
+
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

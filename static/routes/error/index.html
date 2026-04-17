@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Tether</title>
+  <meta charset="utf-8" />
+  <meta name="google-site-verification" content="12aR_338F0VaglKbfvPLczdZV_Ej6AVx9Ef7M4ULfLU" />
+  <meta name="description"
+    content="Tether website includes documentation on all three components Fabric, Tether, and Treehouse. As well as instructions on installation and use cases." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
+  <link href="/zig-out/bin/vapor.wasm" as="fetch" type="application/wasm" crossorigin />
+
+  <!-- Preconnect stays the same -->
+  <link href="https://fonts.googleapis.com" />
+  <link href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://cdn.jsdelivr.net" crossorigin />
+
+  <!-- Load fonts async with media trick -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:wght@400;700&display=swap"
+    rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet" />
+  </noscript>
+
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" as="style"
+    onload="this.rel='stylesheet'" />
+  <noscript>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+  </noscript>
+
+  <script type="module" src="/web/wasi_obj.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Montserrat;
+      font-weight: 400;
+      height: 100vh;
+      width: 100%;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      background-color: rgba(var(--background));
+      color: rgb(var(--text_color));
+      transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+      scrollbar-width: none;
+      /* Firefox */
+      -ms-overflow-style: none;
+      /* IE/Edge */
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-scrollbar: display: none;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      /* Chrome, Safari, Opera */
+      margin: 0;
+    }
+
+
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      line-height: 1.5;
+      font-size-adjust: 0.5;
+    }
+
+    textarea {
+      line-height: 1.5;
+      font-size-adjust: 0.5;
+    }
+
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    /* Basic sidebar styling */
+    .onthispage a {
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    /* This is the class we will toggle */
+    .onthispage a.active {
+      color: dodgerblue;
+      font-weight: bold;
+      transform: scale(1.1);
+    }
+
+    .stats {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      font-family: monospace;
+      font-size: 12px;
+      z-index: 10000;
+      background-color: rgba(var(--background));
+    }
+  </style>
+    <link rel="stylesheet" href="/static/style_variables.css" />
+  <link rel="stylesheet" href="/static/routes/error/style.css" />
+</head></head>
+
+<body>
+  <div class="stats" id="stats">
+    FPS: <span id="fps">0</span><br />
+    Frame Time: <span id="frameTime">0</span>ms<br />
+    Render Time: <span id="renderTime">0</span>ms<br />
+  </div>
+  <div id="contents" style="display: contents"><div  id="nav" class="lay_2355004687 pos_4226863089 mapa_2487839144 vis_858635165 ">
+<div  id="Flex_2851033941-genk" class="lay_742044807 ">
+<a  id="Link_2148954699-genk" class="vis_2782233086 " aria-label="home page of tether" href="/">
+<div  id="Flex_915028410-genk" class="lay_3212761532 mapa_4117309395 vis_3610111763 anim_752735341 intr_2275201365 ">
+<div  id="Grap_1707722983-genk" class="lay_4075706570 vis_4265825448 intr_3191807552 ">
+</div>
+</div>
+</a>
+<ul  id="List_641040586-genk" class="lay_80028923 ">
+<li  id="List_1931446036-genk" class="lay_1071775855 vis_2381593747 intr_4101004655 "">
+<a  id="Link_4269899483-genk" class="vis_2782233086 " aria-label="Vapor" href="/docs/vapor">
+<p  id="Text_3814987054-genk" class="vis_3491491361 ">Vapor</p>
+</a>
+</li>
+<li  id="List_290914501-genk" class="lay_1071775855 vis_2381593747 intr_4101004655 "">
+<a  id="Link_782871717-genk" class="vis_2782233086 " aria-label="Reverb" href="/docs/reverb">
+<p  id="Text_4061285904-genk" class="vis_3491491361 ">Reverb</p>
+</a>
+</li>
+<li  id="List_2945350262-genk" class="lay_1071775855 vis_2381593747 intr_4101004655 "">
+<a  id="Link_1339705068-genk" class="vis_2782233086 " aria-label="Canopy" href="/docs/treehouse">
+<p  id="Text_3493225210-genk" class="vis_3491491361 ">Canopy</p>
+</a>
+</li>
+<li  id="List_1304818727-genk" class="lay_1071775855 vis_2381593747 intr_4101004655 "">
+<a  id="Link_2218807839-genk" class="vis_2782233086 " aria-label="Metal" href="/docs/metal">
+<p  id="Text_3389213952-genk" class="vis_3491491361 ">Metal</p>
+</a>
+</li>
+<li  id="List_3959254488-genk" class="lay_1071775855 vis_2381593747 intr_4101004655 "">
+<a  id="Link_459460175-genk" class="vis_2782233086 " aria-label="About Me" href="/about">
+<p  id="Text_1476673945-genk" class="vis_3491491361 ">About Me</p>
+</a>
+</li>
+</ul>
+</div>
+<div  id="Flex_1210502406-genk" class="lay_2427431289 ">
+<button  id="Butt_3692203482-genk" class="lay_1515371949 mapa_1029637290 vis_3863708168 intr_2738320283 " aria-label="search-dialog">
+<div  id="Flex_3491220137-genk" class="lay_2352082878 ">
+<i  id="Icon_461205268-genk" class="bi bi-search vis_2456070613 " href="bi bi-search">
+</i>
+<p  id="Text_762272481-genk" class="vis_1253340569 ">Search...</p>
+</div>
+<i  id="Icon_1306428635-genk" class="bi bi-command vis_2456070613 " href="bi bi-command">
+</i>
+</button>
+<a  id="Redi_1240995215-genk" class="vis_2782233086 " aria-label="redirect link to tether github repo" href="https://github.com/vic-Rokx/vapor">
+<i  id="Icon_511390286-genk" class="bi bi-github vis_3319038623 intr_3436696024 " href="bi bi-github">
+</i>
+</a>
+<a  id="Redi_3895430976-genk" class="vis_2782233086 " aria-label="redirect link to discord" href="https://github.com/vic-Rokx/vapor">
+<i  id="Icon_1817279550-genk" class="bi bi-discord vis_3319038623 intr_3436696024 " href="bi bi-discord">
+</i>
+</a>
+<a  id="Redi_2254899441-genk" class="vis_2782233086 " aria-label="redirect link to ziglang" href="https://ziglang.org/">
+<div  id="Grap_1858277661-genk" class="lay_395582524 vis_378852699 intr_457968657 ">
+</div>
+</a>
+<button  id="Butt_1425044638-genk" class="mapa_2382506810 vis_4269074653 ">
+<i  id="Icon_558382312-genk" class="bi bi-cloud-moon vis_3319038623 intr_3436696024 " href="bi bi-cloud-moon">
+</i>
+</button>
+</div>
+</div>
+
+
+<div  id="Flex_2924438023-genk" class="lay_1853124179 ">
+<p  id="Text_3473539826-genk" class="vis_3357513371 ">Error: Page Not Found</p>
+<div  id="Flex_435669510-genk" class="lay_2753401826 ">
+<button  id="Butt_4259817468-genk" class="lay_2838297064 vis_1987440936 anim_752735341 intr_2275201365 ">
+<p  id="Text_1913000997-genk" class="vis_523113798 ">Go back</p>
+</button>
+</div>
+</div>
+</div>
+</body>
+</html>

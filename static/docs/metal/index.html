@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Senet</title>
+  <meta charset="utf-8" />
+  <meta name="google-site-verification" content="12aR_338F0VaglKbfvPLczdZV_Ej6AVx9Ef7M4ULfLU" />
+  <meta name="description"
+    content="Senet website includes documentation on all three components Vapor, Reverb, and Canopy. As well as instructions on installation and use cases." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
+  <link rel="preload" href="/zig-out/bin/vapor.wasm" as="fetch" type="application/wasm" crossorigin />
+
+  <!-- Preconnect stays the same -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:wght@400;700&display=swap"
+    rel="stylesheet" media="print" onload="this.media = 'all'" />
+
+  <link rel="preload" href="/assets/css/bootstrap-icons.css" as="style" onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      " />
+  <noscript>
+    <link rel="stylesheet" href="/assets/css/bootstrap-icons.css" />
+  </noscript>
+  <script type="module" src="/web/bundle.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Montserrat;
+      /* font-family: "Barlow", sans-serif; */
+      font-optical-sizing: auto;
+      height: 100dvh;
+      width: 100%;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      background-color: rgba(var(--background));
+      color: rgb(var(--text_color));
+      transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+      scrollbar-width: none;
+      /* Firefox */
+      -ms-overflow-style: none;
+      /* IE/Edge */
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-scrollbar: display: none;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      /* Chrome, Safari, Opera */
+      margin: 0;
+    }
+
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    textarea {
+      line-height: 1.5;
+      font-size-adjust: 0.5;
+      font-family: inherit;
+    }
+
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    div {
+      min-width: 0;
+    }
+
+    button p input {
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      color: inherit;
+    }
+
+    input[type="file"]::file-selector-button {
+      background: transparent;
+      color: transparent;
+      border: none;
+    }
+
+    input:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px transparent inset;
+      -webkit-text-fill-color: inherit;
+      caret-color: inherit;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
+    .reload-indicator {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 6px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      font-family: system-ui, sans-serif;
+      font-size: 14px;
+      z-index: 99999;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .reload-indicator.visible {
+      display: flex;
+    }
+
+    .reload-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid #333;
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* The gear disc - moves DOWN and LEFT when switched ON */
+    #gearDisc {
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* The star disc - moves UP and RIGHT when switched ON */
+    #starDisc {
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+  </style>
+  <link rel="stylesheet" href="/static/docs/metal/style.css" />
+<link rel="stylesheet" href="/static/style_variables.css" /></head>
+
+<body>
+  <div id="reload-indicator" class="reload-indicator">
+    <div class="reload-spinner"></div>
+    <span>Reloading... <span id="reload-timer">0.0</span>s</span>
+  </div>
+  <main id="contents" style="display: contents"><div  id="Flex_S7ezG2-gk" class="lay_ihMZH4 pos_e8wtf3 mapa_TK4ER4 vis_SWFkJ2 ">
+<div  id="Flex_nuQjl1-gk" class="lay_9Micz2 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 ">
+<div  id="Flex_KEh2u1-gk" class="lay_2lJXK pos_e8wtf3 mapa_AyNhz vis_SWFkJ2 ">
+<div  id="Flex_BDJQp3-gk" class="lay_55FOq1 pos_e8wtf3 mapa_cN7oy3 vis_SWFkJ2 ">
+<div  id="Flex_fyVdm-gk" class="lay_an4Nz pos_e8wtf3 mapa_cN7oy3 vis_SWFkJ2 ">
+<div  id="Flex_mWSE42-gk" class="lay_oSHHV pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 ">
+<p  id="Text_cUmZU1-gk" class="lay_RnK9f1 pos_e8wtf3 mapa_VKsEa1 vis_rEfE93 ">Metal</p>
+<p  id="Html_7TZ6B2-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_O7nKQ "><strong>Vapor, Reverb, Canopy</strong> all run on Metal, there 
+is no need for Docker Containers or
+Runtimes.</p>
+
+</div>
+</div>
+<div  id="Flex_a3iT2-gk" class="lay_Xjgb34 pos_e8wtf3 mapa_WshOF vis_SWFkJ2 ">
+<button  id="CtxB_V5SnB1-gk" class="lay_0yRDz2 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
+<p  id="Text_XYwO9-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">curl -sSL https://raw.githubusercontent.com/senet-toolbox/metal/main/install.sh | bash</p>
+<div  id="Flex_9IwC02-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
+<i  id="Icon_WkW1e1-gk" class="bi bi-clipboard lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">
+</i>
+</div>
+</button>
+<button  id="CtxB_6ro1x2-gk" class="lay_0yRDz2 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
+<p  id="Text_l8MUw2-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">metal create myapp</p>
+<div  id="Flex_z1HWn2-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
+<i  id="Icon_gav7Q3-gk" class="bi bi-clipboard lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">
+</i>
+</div>
+</button>
+<button  id="CtxB_g8DeD4-gk" class="lay_0yRDz2 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
+<p  id="Text_7BIBr2-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">my-app && metal vapor run</p>
+<div  id="Flex_9CG8t3-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
+<i  id="Icon_RhtaB2-gk" class="bi bi-clipboard lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">
+</i>
+</div>
+</button>
+</div>
+<p  id="Text_jxDQR1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_sZTeW3 ">It runs on my Machine!</p>
+<p  id="Html_D7eoD1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">As we all know, switching machines, or having to reinstall megabytes of dependencies is a pain,
+and eventually leads to the dreaded "It works on my machine" problem. 
+Running a static blog shouldn’t require an entire runtime environment, build chain, and container stack. Nor should a full-stack app.</p>
+
+<p  id="Html_n7g7N1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">The framework that is installed on one machine should run deterministically on another.
+Every current JS framework or other framework currently ships dependencies. And there is no way to avoid them.</p>
+
+<p  id="Text_9ruKo3-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_sZTeW3 ">Binary</p>
+<p  id="Html_er1ln2-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">Metal is how Vapor, Reverb and Canopy, compile and build the binaries. Depending on persmissions,
+Vapor will use wasm-opt and brotli, to compress the WASM binaries, this will reduce the total bundle size. For example, the raw
+WASM binary of this site it 7MB, after compressing using Metal, we result in 180kb total. While other frameworks may ship 100kb-200kb by default.
+Remember Vapor, is running WASM, so the browser not only parses this <a href="https://webassembly.org/docs/faq/">10x-20x</a> 
+faster, but also runs <a href="https://hacks.mozilla.org/2018/01/oxidizing-source-maps-with-rust-and-webassembly/">1.5x-2x</a> faster.
+And again, we only have one binary file running the Vapor server, and one vapor.wasm file which contains our UI, and client side functionality.</p>
+
+<div  id="Flex_rosp52-gk" class="lay_EV1UJ4 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 ">
+<p  id="Text_TCfgp-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_sZTeW3 ">Total file count</p>
+<ul  id="List_ykkCi1-gk" class="lay_PNZMO3 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 ">
+<li  id="List_QIIUd-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 "">
+<p  id="Text_IUjQQ2-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">Vapor: server.exe, vapor.wasm, bundle.min.js</p>
+</li>
+<li  id="List_FmSgH3-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 "">
+<p  id="Text_lluPN1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">Reverb: server.exe</p>
+</li>
+<li  id="List_6WYzo1-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 "">
+<p  id="Text_HccAr2-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">Canopy: server.exe</p>
+</li>
+</ul>
+</div>
+<p  id="Text_2cLP72-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_sZTeW3 ">Caveat</p>
+<p  id="Html_ETcLI1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">Alot of people are going to tell you that, Yes WASM is faster, but the overhead, between JS bridging to WASM, kills
+your performace. This claim is valid, however the amount of time to bridge between WASM and JS is 10ns
+so you would need to perform over 10,000,000 operations to hit and overhead of 1 second. Moving string around costs anywhere from 
+hundreds of nanoseconds up to a few milliseconds, because of size. You pay for the linear encoding, due UTF-8 and UTF-16 differences. 
+However, WASM is contionously being improved and changed, in the next year or so, a new model will be release, where no copying will be needed.
+And you will be able to interact with JS string and object without the need of crossing a 'bridge' ie negligible cost.
+One very simple way to not cross this boundary a ton, is just batch. Vapor does this by default. </p>
+
+</div>
+<div  id="Flex_ZrWQO-gk" class="lay_EV1UJ4 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 ">
+<h1  id="Head_UAmdI-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_w2tSd1 ">Commands
+</h>
+<p  id="Html_qAqXE4-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">Metal is a CLI tool, and it has a lot of commands. 
+You can run <code>metal --help</code> to see all the commands.</p>
+
+<p  id="Html_Chy9v2-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">Every command is run within the current directory. You can specify a output path with the <code>-o</code> flag.</p>
+
+<button  id="CtxB_Vj0lq1-gk" class="lay_Eehab1 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
+<p  id="Text_kesWv2-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">metal -v gen Grid -o /components/MyGrid.zig</p>
+<div  id="Flex_HtkV83-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
+<i  id="Icon_uP4KJ2-gk" class="bi bi-clipboard lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">
+</i>
+</div>
+</button>
+<button  id="CtxB_qI2CI3-gk" class="lay_Eehab1 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
+<p  id="Text_LqhVA1-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">metal -r gen Crud -o /routes/about/MyCrud.zig</p>
+<div  id="Flex_eM94M3-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
+<i  id="Icon_EYs4Y2-gk" class="bi bi-clipboard lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">
+</i>
+</div>
+</button>
+<p  id="Html_1xB4H3-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">Metal differentiates between Vapor, Reverb, and Canopy, with -v, -r, and -c flags.
+After this, you can run various generation commands, like <code>metal -v create my-app</code> or <code>metal -v gen DataTable</code>.</p>
+
+<h2  id="Head_XRqed3-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_Gq5qa3 ">Vapor Gen Command
+</h>
+<p  id="Html_q7Pux3-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">When passing the <cod>gen</code> command, we can generate various component types, like <code>DataTable</code>.
+We can also generate Form components, based on a struct argument. For example, Vaporize can be used to generate the base Form UI, and then
+one can mutate the styles, or add custom logic. This is useful for rapid prototyping.</p>
+
+<button  id="CtxB_ySBSs2-gk" class="lay_Eehab1 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
+<p  id="Text_gormn-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">metal -v gen Select</p>
+<div  id="Flex_WWdNw1-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
+<i  id="Icon_0SMsV3-gk" class="bi bi-clipboard lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">
+</i>
+</div>
+</button>
+<button  id="CtxB_iLCtJ1-gk" class="lay_Eehab1 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
+<p  id="Text_Zx64k3-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">metal -v gen DragandDrop</p>
+<div  id="Flex_9ElWS4-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
+<i  id="Icon_gMYSC3-gk" class="bi bi-clipboard lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">
+</i>
+</div>
+</button>
+<button  id="CtxB_i1HgK3-gk" class="lay_Eehab1 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
+<p  id="Text_3rL7m-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">metal -v gen ui [path-to-zon-file]</p>
+<div  id="Flex_tRSdz3-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
+<i  id="Icon_hNFBH2-gk" class="bi bi-clipboard lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">
+</i>
+</div>
+</button>
+<h2  id="Head_MRncn1-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_Gq5qa3 ">Reverb Gen Command
+</h>
+<p  id="Html_XmdMk2-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">We follow the same pattern as Vapor, with Reverb, we can generate cruds, routes, auth, and more.</p>
+
+<button  id="CtxB_LrBbr-gk" class="lay_Eehab1 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
+<p  id="Text_0CY63-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">metal -r gen Crud</p>
+<div  id="Flex_igtGn1-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
+<i  id="Icon_x3Mf9-gk" class="bi bi-clipboard lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">
+</i>
+</div>
+</button>
+<button  id="CtxB_HgEN64-gk" class="lay_Eehab1 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
+<p  id="Text_fUF9g2-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">metal -r gen Auth -o /routes/auth/MyAuth.zig</p>
+<div  id="Flex_1Njv73-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
+<i  id="Icon_fOEUO-gk" class="bi bi-clipboard lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">
+</i>
+</div>
+</button>
+<h2  id="Head_kEJVf-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_Gq5qa3 ">Release & Deployment Commands
+</h>
+<p  id="Html_B5GQ6-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">We can release with Metal, via:</p>
+
+<button  id="CtxB_AUpHF-gk" class="lay_Eehab1 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
+<p  id="Text_kkNP34-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">metal -v release-mode={debug|fast|small}</p>
+<div  id="Flex_OWcLY-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
+<i  id="Icon_uDuVA1-gk" class="bi bi-clipboard lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">
+</i>
+</div>
+</button>
+<button  id="CtxB_kP8lz1-gk" class="lay_Eehab1 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
+<p  id="Text_CX4mI-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">metal -r release-mode={debug|fast|small}</p>
+<div  id="Flex_ik2xA-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
+<i  id="Icon_vWLK83-gk" class="bi bi-clipboard lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">
+</i>
+</div>
+</button>
+<button  id="CtxB_Q7ryr-gk" class="lay_Eehab1 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
+<p  id="Text_qyajg1-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">metal -c release-mode={debug|fast|small}</p>
+<div  id="Flex_GNXAK-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
+<i  id="Icon_8MqNS-gk" class="bi bi-clipboard lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">
+</i>
+</div>
+</button>
+<p  id="Html_eqj3H1-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">This will generate various types of files, based on the mode. For Vapor specifically, release-mode small and fast, will run the wasm-opt and brotli commands.
+This will further compress the WASM binary, reaching an average 40x reduction in size.</p>
+
+<p  id="Html_8OO711-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">Vapor's server runs on Reverb, and so we get all the performance benefits of Reverb, by default.</p>
+
+<p  id="Html_nAqka2-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">Vapor also takes the <code>pre-gen</code> command, which at build time, will generate a static HTML files, and serve them on initial request, 
+then following up with the WASM binary, this improves the first paint time, and reduces the time to first byte.</p>
+
+<button  id="CtxB_zfbk43-gk" class="lay_Eehab1 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
+<p  id="Text_c4t4F4-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">metal -v release-mode=small pre-gen</p>
+<div  id="Flex_ykQcd2-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
+<i  id="Icon_PEDW44-gk" class="bi bi-clipboard lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">
+</i>
+</div>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div  id="Flex_Ym7PE1-gk" class="lay_OWszu3 pos_SdsMW2 mapa_CrkEb2 vis_SWFkJ2 ">
+<div  id="Flex_5x7Mw2-gk" class="lay_2cgBG3 pos_bITd33 mapa_GjRnP2 vis_Q110p1 ">
+<div  id="Flex_QNEZT4-gk" class="lay_hlUWK2 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 ">
+<button  id="CtxB_IcUAh-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_gyebf ">
+<img  id="Imag_xOeFn2-gk" class="lay_WGV0Q2 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 " src="/assets/circlelogo.webp"alt="tether logo">
+</img>
+</button>
+<p  id="Text_ZbQvA-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_SO5xu ">Senet</p>
+<div  id="Flex_YEEb51-gk" class="lay_si0Hc3 pos_e8wtf3 mapa_CrkEb2 vis_JjXJ13 ">
+</div>
+<p  id="Text_18JCM3-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_rjATP3 ">Docs</p>
+</div>
+<button  id="CtxB_zzilq1-gk" class="lay_4zOGB pos_e8wtf3 mapa_4hFg71 vis_if79V2 intr_9uoaP4 "aria-label="search-dialog">
+<div  id="Flex_HnDuZ1-gk" class="lay_u0Lld pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 ">
+<i  id="Icon_c2HvA4-gk" class="bi bi-search lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_vo30a4 ">
+</i>
+<p  id="Text_NQyUH1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_5eQmY3 ">Search...</p>
+</div>
+<i  id="Icon_JvquW4-gk" class="bi bi-command lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_vo30a4 ">
+</i>
+</button>
+<div  id="Flex_0Zsrh-gk" class="lay_tdxpO pos_e8wtf3 mapa_TK4ER4 vis_SWFkJ2 ">
+<button  id="CtxB_F803k2-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_gyebf "aria-label="toggle theme">
+<i  id="Icon_gV5XL1-gk" class="bi bi-cloud-moon lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_Mk2PV2 intr_Fn5JI ">
+</i>
+</button>
+</div>
+</div>
+<div  id="Flex_hPmMZ3-gk" class="lay_OWszu3 pos_FEjf82 mapa_CrkEb2 vis_WwEfq2 ">
+<ul  id="List_Ftaou-gk" class="lay_QJy9D4 pos_e8wtf3 mapa_bnttp vis_lcyu72 ">
+<li  id="menu-/docs/vapor" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_T0ZW91 intr_HI6ex1 "">
+<button  id="CtxB_QFocu3-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_LxKcR3-gk" class="bi bi-house lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_psHsZ ">
+</i>
+<p  id="Text_2NiPV-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_XfJUm ">Overview</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/ask-an-llm" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_0Djd8-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_UVLAi1-gk" class="bi bi-robot lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_vGBc04-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Learn via LLM</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/justletmebuild" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_Lp7w92-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_XTgsI4-gk" class="bi bi-fire lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_mAiv43-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Just let me build!!!!</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/basics" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_preb11-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_JmpQv1-gk" class="bi bi-mortarboard lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_8GMfF4-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Basics</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/components" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_QIAWg3-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"   id="Svg_Mf8jI3-gk" class="lay_9Tg063 pos_e8wtf3 mapa_CrkEb2 vis_6g8yU ">
+<!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M256 96C256 78.3 270.3 64 288 64L352 64C369.7 64 384 78.3 384 96L384 160C384 177.7 369.7 192 352 192L288 192C270.3 192 256 177.7 256 160L256 96zM288 448L352 448C369.7 448 384 462.3 384 480L384 544C384 561.7 369.7 576 352 576L288 576C270.3 576 256 561.7 256 544L256 480C256 462.3 270.3 448 288 448zM480 448L544 448C561.7 448 576 462.3 576 480L576 544C576 561.7 561.7 576 544 576L480 576C462.3 576 448 561.7 448 544L448 480C448 462.3 462.3 448 480 448zM384 256L448 256C465.7 256 480 270.3 480 288L480 352C480 369.7 465.7 384 448 384L384 384C366.3 384 352 369.7 352 352L352 288C352 270.3 366.3 256 384 256zM201.4 252.1C213.9 239.6 234.2 239.6 246.7 252.1L292 297.4C304.5 309.9 304.5 330.2 292 342.7L246.7 388C234.2 400.5 213.9 400.5 201.4 388L156.1 342.6C143.6 330.1 143.6 309.8 156.1 297.3L201.4 252zM96 448L160 448C177.7 448 192 462.3 192 480L192 544C192 561.7 177.7 576 160 576L96 576C78.3 576 64 561.7 64 544L64 480C64 462.3 78.3 448 96 448z"/>
+</svg>
+<p  id="Text_MJYpC2-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Components</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/dont-know-zig" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_OCojM2-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_xAxfw1-gk" class="bi bi-filetype-js lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_kB5At2-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">From JS to Zig</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/project" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_p4TW01-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_3kQtb1-gk" class="bi bi-diagram-3 lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_bo4eU2-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Project Structure</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/routing" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_fMygM1-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_jIopD1-gk" class="bi bi-signpost lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_xMxHw1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Routing</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/styling" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_mNhg72-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_dCpLG2-gk" class="bi bi-paint-bucket lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_tLsy12-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Styling</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/reactivity" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_v6CBJ3-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_RadqR2-gk" class="bi bi-arrow-repeat lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_7vOnh3-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Reactivity</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/common-patterns" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_pqQVj3-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_keXFe2-gk" class="bi bi-filetype-js lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_qrhWR1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Common Patterns</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/gotchas" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_nxtex-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_Mj5dY2-gk" class="bi bi-exclamation-circle lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_t6H0R4-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Gotchas</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/vaporize" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_D6qG51-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_d5Qtp1-gk" class="bi bi-device-hdd-fill lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_PFdeL-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Vaporize</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/animation" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_sy75-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_aTJdg-gk" class="bi bi-film lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_Tpplx2-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Animation</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/new-to-zig" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_lu1gf1-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"   id="Svg_cZSt91-gk" class="lay_9Tg063 pos_e8wtf3 mapa_CrkEb2 vis_6g8yU ">
+<!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M240 64C213.5 64 192 85.5 192 112L192 320C192 346.5 213.5 368 240 368L304 368C330.5 368 352 346.5 352 320L352 256L384 256C454.7 256 512 313.3 512 384C512 454.7 454.7 512 384 512L96 512C78.3 512 64 526.3 64 544C64 561.7 78.3 576 96 576L544 576C561.7 576 576 561.7 576 544C576 526.3 561.7 512 544 512L527.1 512C557.5 478 576 433.2 576 384C576 278 490 192 384 192L352 192L352 112C352 85.5 330.5 64 304 64L240 64zM184 416C170.7 416 160 426.7 160 440C160 453.3 170.7 464 184 464L360 464C373.3 464 384 453.3 384 440C384 426.7 373.3 416 360 416L184 416z"/>
+</svg>
+<p  id="Text_xvqKc1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Deep Dive</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/memory" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_wUaaT2-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_J5IWY4-gk" class="bi bi-memory lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_qVBp82-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Memory</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/layout" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_vDqXh1-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_cRxRj-gk" class="bi bi-columns lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_vJX3K-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Layout</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/kit" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_2Ryn-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_38Bax-gk" class="bi bi-tools lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_lS2TM3-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Kit</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/events" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_oxLZ24-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_fs58K-gk" class="bi bi-cursor lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_3PF3T3-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Events & Handlers</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/hooks" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_V2dLJ4-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_H1Ei31-gk" class="bi bi-hourglass-split lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_NJOLj1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Lifecycle Hooks</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/theme-and-icons" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_W7Tji1-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_SZ6L81-gk" class="bi bi-palette2 lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_jIa8A2-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Theme and Icons</p>
+</button>
+</li>
+<li  id="menu-/react-to-vapor" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_qlf8R-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"   id="Svg_t3gRY1-gk" class="lay_9Tg063 pos_e8wtf3 mapa_CrkEb2 vis_6g8yU ">
+<!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M482.2 241.2C476.8 239.4 471.4 237.7 466 236.1C466.9 232.4 467.7 228.7 468.5 225C480.8 165.4 472.7 117.5 445.4 101.7C419.1 86.6 376.2 102.3 332.8 140.1C328.5 143.8 324.3 147.7 320.3 151.6C317.6 149 314.8 146.4 312 143.9C266.5 103.5 220.9 86.5 193.6 102.4C167.4 117.6 159.6 162.7 170.6 219.1C171.7 224.7 172.9 230.2 174.3 235.8C167.9 237.6 161.6 239.6 155.7 241.7C102.3 260.2 64 289.4 64 319.6C64 350.8 104.8 382.1 160.3 401.1C164.8 402.6 169.3 404.1 173.9 405.4C172.4 411.4 171.1 417.3 169.9 423.4C159.4 478.9 167.6 522.9 193.8 538C220.8 553.6 266.2 537.6 310.4 498.9C313.9 495.8 317.4 492.6 320.9 489.2C325.3 493.5 329.9 497.6 334.5 501.6C377.3 538.4 419.6 553.3 445.7 538.2C472.7 522.6 481.5 475.3 470.1 417.7C469.2 413.3 468.2 408.8 467.1 404.2C470.3 403.3 473.4 402.3 476.5 401.3C534.2 382.2 576 351.3 576 319.6C576 289.3 536.6 259.9 482.2 241.2zM346.9 156.3C384.1 123.9 418.8 111.2 434.6 120.3C451.5 130 458 169.2 447.4 220.7C446.7 224.1 446 227.4 445.1 230.7C422.9 225.7 400.4 222.1 377.8 220.1C364.8 201.5 350.6 183.7 335.2 167C339.1 163.3 342.9 159.8 346.9 156.3zM231.2 371.5C236.3 380.2 241.5 388.9 247 397.4C231.4 395.7 215.9 393.2 200.6 389.9C205 375.5 210.5 360.6 216.9 345.4C221.5 354.2 226.2 362.9 231.2 371.5zM200.9 251.2C215.3 248 230.6 245.4 246.5 243.4C241.2 251.7 236 260.2 231.1 268.8C226.2 277.3 221.4 286 216.9 294.8C210.6 279.9 205.3 265.3 200.9 251.2zM228.3 320.1C234.9 306.3 242.1 292.8 249.7 279.5C257.3 266.2 265.5 253.3 274.1 240.6C289.1 239.5 304.4 238.9 320 238.9C335.6 238.9 351 239.5 365.9 240.6C374.4 253.2 382.5 266.1 390.2 279.3C397.9 292.5 405.1 306 411.9 319.7C405.2 333.5 398 347.1 390.3 360.5C382.7 373.8 374.6 386.7 366.1 399.5C351.2 400.6 335.7 401.1 320 401.1C304.3 401.1 289.1 400.6 274.4 399.7C265.7 387 257.5 374 249.8 360.7C242.1 347.4 235 333.9 228.3 320.1zM408.9 371.3C414 362.5 418.8 353.6 423.5 344.6C429.9 359.1 435.5 373.8 440.4 388.9C424.9 392.4 409.2 395.1 393.4 396.9C398.8 388.5 403.9 379.9 408.9 371.3zM423.3 294.8C418.6 286 413.8 277.2 408.8 268.6C403.9 260.1 398.8 251.7 393.5 243.4C409.6 245.4 425 248.1 439.4 251.4C434.8 266.2 429.4 280.6 423.3 294.8zM320.2 182.3C330.7 193.7 340.6 205.7 349.8 218.1C330 217.2 310.1 217.2 290.3 218.1C300.1 205.2 310.2 193.2 320.2 182.3zM204.2 121C221 111.2 258.3 125.2 297.6 160C300.1 162.2 302.6 164.6 305.2 167C289.7 183.7 275.4 201.5 262.3 220.1C239.7 222.1 217.3 225.6 195.1 230.5C193.8 225.4 192.7 220.2 191.6 215C182.2 166.6 188.4 130.1 204.2 121zM179.7 384.6C175.5 383.4 171.4 382.1 167.3 380.7C146 374 121.8 363.4 104.3 349.5C94.2 342.5 87.4 331.7 85.5 319.6C85.5 301.3 117.1 277.9 162.7 262C168.4 260 174.2 258.2 180 256.5C186.8 278.2 195 299.5 204.5 320.1C194.9 341 186.6 362.6 179.7 384.6zM296.3 482.6C279.8 497.7 260.7 509.7 239.9 517.9C228.8 523.2 216 523.7 204.6 519.2C188.7 510 182.1 474.7 191.1 427.2C192.2 421.6 193.4 416 194.8 410.5C217.2 415.3 239.8 418.6 262.7 420.3C275.9 439 290.4 456.9 305.9 473.7C302.7 476.8 299.5 479.8 296.3 482.6zM320.8 458.3C310.6 447.3 300.4 435.1 290.5 422C300.1 422.4 310 422.6 320 422.6C330.3 422.6 340.4 422.4 350.4 421.9C341.2 434.6 331.3 446.7 320.8 458.3zM451.5 488.3C450.6 500.5 444.6 511.9 435 519.6C419.1 528.8 385.2 516.8 348.6 485.4C344.4 481.8 340.2 477.9 335.9 473.9C351.2 457 365.3 439.1 378.1 420.3C401 418.4 423.8 414.9 446.3 409.8C447.3 413.9 448.2 418 449 422C453.9 443.6 454.7 466.1 451.5 488.3zM469.7 380.8C466.9 381.7 464.1 382.6 461.2 383.4C454.2 361.6 445.6 340.3 435.7 319.6C445.3 299.2 453.4 278.2 460.2 256.7C465.4 258.2 470.4 259.8 475.2 261.4C521.8 277.4 554.5 301.2 554.5 319.4C554.5 339 519.6 364.3 469.7 380.8zM320 365.8C345.3 365.8 365.8 345.3 365.8 320C365.8 294.7 345.3 274.2 320 274.2C294.7 274.2 274.2 294.7 274.2 320C274.2 345.3 294.7 365.8 320 365.8z"/>
+</svg>
+<p  id="Text_CSFxo3-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">React to Vapor</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/codex-engine" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_Yu6M91-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_lmPIe1-gk" class="bi bi-motherboard lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_xpAjK1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Codex Engine</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/performance" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_qsf5Y1-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_2lcEK2-gk" class="bi bi-ethernet lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_aPmF9-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Performance</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/tutorials" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_gMJ851-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_o9tcS-gk" class="bi bi-bar-chart-steps lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_TUvuK4-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Tutorials</p>
+</button>
+</li>
+<li  id="menu-/docs/vapor/concepts/api" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_oYwRH-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_oRxuF1-gk" class="bi bi-filetype-json lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_iXIgC3-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">API Cheat Sheet</p>
+</button>
+</li>
+<li  id="menu-/docs/metal" class="lay_WAJEb3 pos_e8wtf3 mapa_CrkEb2 vis_FzjGF2 intr_rBik44 "">
+<button  id="CtxB_v6SZo3-gk" class="lay_DNi8R1 pos_e8wtf3 mapa_3Qb5v vis_gyebf ">
+<i  id="Icon_OYugm1-gk" class="bi bi-screwdriver lay_m01Na3 pos_e8wtf3 mapa_CrkEb2 vis_0e7A4 ">
+</i>
+<p  id="Text_n54SY-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_AKoP24 ">Metal</p>
+</button>
+</li>
+</ul>
+</div>
+<div  id="Flex_nALMT1-gk" class="lay_lUumd1 pos_mKRCe mapa_CrkEb2 vis_SWFkJ2 ">
+<div  id="Flex_DaEt84-gk" class="lay_egUEe2 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 ">
+<i  id="Icon_groYp3-gk" class="bi bi-view-list lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_rHh4 ">
+</i>
+<p  id="Text_Sml5h1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_hjUBs1 ">On this page</p>
+</div>
+<ul  id="List_bsGP51-gk" class="lay_cipmQ1 pos_e8wtf3 mapa_JuL712 vis_lcyu72 ">
+</ul>
+</div>
+<div  id="Hook_0B9f33-gk">
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,239 @@
+.lay_2355004687{
+display:flex;
+flex-direction:row;
+justify-content:space-between;
+align-items:center;
+flex: 1;
+height:60px;
+}
+.lay_1071775855{
+display:flex;
+flex-direction:row;
+justify-content:flex-start;
+align-items:center;
+width:auto;
+height:30px;
+}
+.lay_1515371949{
+display:flex;
+flex-direction:row;
+justify-content:space-between;
+align-items:center;
+width:70%;
+height:38px;
+}
+.lay_3212761532{
+display:flex;
+flex-direction:row;
+justify-content:center;
+align-items:center;
+width:45px;
+}
+.lay_80028923{
+display:flex;
+flex-direction:row;
+justify-content:center;
+align-items:center;
+gap:60px;
+width:100%;
+height:100%;
+}
+.lay_2427431289{
+display:flex;
+flex-direction:row;
+justify-content:center;
+align-items:center;
+gap:24px;
+width:30%;
+}
+.lay_4075706570{
+width:100%;
+height:100%;
+}
+.lay_395582524{
+width:24px;
+height:24px;
+}
+.lay_742044807{
+display:flex;
+flex-direction:row;
+justify-content:flex-start;
+align-items:center;
+gap:10px;
+height:50px;
+}
+.lay_2838297064{
+width:160px;
+height:45px;
+}
+.lay_1853124179{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+width:100%;
+height:100%;
+}
+.lay_2352082878{
+display:flex;
+flex-direction:row;
+justify-content:flex-start;
+align-items:center;
+gap:24px;
+}
+.lay_2753401826{
+display:flex;
+flex-direction:row;
+justify-content:center;
+align-items:center;
+gap:32px;
+width:100%;
+}
+.vis_378852699{
+fill:rgb(var(--icon_color));
+text-decoration:none;
+}
+.vis_3863708168{
+background-color:rgb(var(--background));
+cursor:pointer;
+border-width:1px 1px 1px 1px;
+border-style: solid;
+border-color:rgb(225,225,225);
+text-decoration:none;
+}
+.vis_4269074653{
+background-color:rgba(0,0,0,0);
+cursor:pointer;
+border-width:0px 0px 0px 0px;
+border-style: solid;
+text-decoration:none;
+}
+.vis_2456070613{
+font-size:16px;
+color:rgb(var(--icon_color));
+text-decoration:none;
+}
+.vis_3357513371{
+font-size:160px;
+font-weight:700;
+color:rgb(var(--text_color));
+text-decoration:none;
+}
+.vis_1987440936{
+background-color:rgba(0,0,0,0);
+cursor:pointer;
+border-width:1px 1px 1px 1px;
+border-style: solid;
+border-color:rgb(var(--text_color));
+text-decoration:none;
+transition:100ms linear;
+}
+.vis_2782233086{
+text-decoration:none;
+}
+.vis_3610111763{
+color:rgb(var(--text_color));
+text-decoration:none;
+transition:100ms linear;
+}
+.vis_858635165{
+backdrop-filter:blur(2px);
+text-decoration:none;
+}
+.vis_1253340569{
+font-size:16px;
+font-family:IBM Plex Mono,monospace;
+font-weight:500;
+color:rgb(var(--icon_color));
+text-decoration:none;
+}
+.vis_4265825448{
+fill:rgb(var(--text_color));
+stroke:rgb(var(--text_color));
+text-decoration:none;
+transition:100ms linear;
+}
+.vis_3491491361{
+font-size:20px;
+font-family:IBM Plex Mono,monospace;
+font-weight:300;
+color:rgb(var(--text_color));
+text-decoration:none;
+}
+.vis_2381593747{
+border-width:0px 0px 1px 0px;
+border-style: solid;
+border-color:rgba(0,0,0,0);
+list-style:none;
+text-decoration:none;
+}
+.vis_523113798{
+font-size:18px;
+font-family:Montserrat;
+text-decoration:none;
+}
+.vis_3319038623{
+font-size:24px;
+color:rgb(var(--icon_color));
+text-decoration:none;
+}
+.pos_4226863089{
+position:fixed;
+top:0px;
+right:0px;
+left:0px;
+z-index:999;
+}
+.mapa_2487839144{
+padding:0px 50px 0px 50px;
+margin:0px 0px 0px 0px;
+}
+.mapa_4117309395{
+padding:0px 0px 0px 0px;
+margin:0px 30px 0px 0px;
+}
+.mapa_1029637290{
+padding:4px 8px 4px 8px;
+margin:0px 0px 0px 0px;
+}
+.mapa_2382506810{
+padding:0px 0px 0px 0px;
+margin:0px 0px 0px 0px;
+}
+.intr_3191807552:hover{
+fill:rgb(var(--tint));
+stroke:rgb(var(--tint));
+text-decoration:none;
+position:none;
+}
+.intr_4101004655:hover{
+border-width:0px 0px 1px 0px;
+border-style: solid;
+border-color:rgb(var(--text_color));
+text-decoration:none;
+position:none;
+}
+.intr_3436696024:hover{
+color:rgb(var(--tint));
+text-decoration:none;
+position:none;
+}
+.intr_457968657:hover{
+fill:rgb(var(--tint));
+text-decoration:none;
+position:none;
+}
+.intr_2738320283:hover{
+border-width:1px 1px 1px 1px;
+border-style: solid;
+border-color:rgb(var(--tint));
+text-decoration:none;
+position:none;
+}
+.intr_2275201365:hover{
+text-decoration:none;
+position:none;
+}
+.anim_752735341:hover{
+transform:scale(1.049804) ;
+}

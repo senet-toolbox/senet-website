@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Senet</title>
+  <meta charset="utf-8" />
+  <meta name="google-site-verification" content="12aR_338F0VaglKbfvPLczdZV_Ej6AVx9Ef7M4ULfLU" />
+  <meta name="description"
+    content="Senet website includes documentation on all three components Vapor, Reverb, and Canopy. As well as instructions on installation and use cases." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
+  <link rel="preload" href="/zig-out/bin/vapor.wasm" as="fetch" type="application/wasm" crossorigin />
+
+  <!-- Preconnect stays the same -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:wght@400;700&display=swap"
+    rel="stylesheet" media="print" onload="this.media = 'all'" />
+
+  <link rel="preload" href="/assets/css/bootstrap-icons.css" as="style" onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      " />
+  <noscript>
+    <link rel="stylesheet" href="/assets/css/bootstrap-icons.css" />
+  </noscript>
+  <script type="module" src="/web/bundle.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Montserrat;
+      /* font-family: "Barlow", sans-serif; */
+      font-optical-sizing: auto;
+      height: 100dvh;
+      width: 100%;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      background-color: rgba(var(--background));
+      color: rgb(var(--text_color));
+      transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+      scrollbar-width: none;
+      /* Firefox */
+      -ms-overflow-style: none;
+      /* IE/Edge */
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-scrollbar: display: none;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      /* Chrome, Safari, Opera */
+      margin: 0;
+    }
+
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    textarea {
+      line-height: 1.5;
+      font-size-adjust: 0.5;
+      font-family: inherit;
+    }
+
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    div {
+      min-width: 0;
+    }
+
+    button p input {
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      color: inherit;
+    }
+
+    input[type="file"]::file-selector-button {
+      background: transparent;
+      color: transparent;
+      border: none;
+    }
+
+    input:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px transparent inset;
+      -webkit-text-fill-color: inherit;
+      caret-color: inherit;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
+    .reload-indicator {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 6px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      font-family: system-ui, sans-serif;
+      font-size: 14px;
+      z-index: 99999;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .reload-indicator.visible {
+      display: flex;
+    }
+
+    .reload-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid #333;
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* The gear disc - moves DOWN and LEFT when switched ON */
+    #gearDisc {
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* The star disc - moves UP and RIGHT when switched ON */
+    #starDisc {
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+  </style>
+  <link rel="stylesheet" href="/static/huh/style.css" />
+<link rel="stylesheet" href="/static/style_variables.css" /></head>
+
+<body>
+  <div id="reload-indicator" class="reload-indicator">
+    <div class="reload-spinner"></div>
+    <span>Reloading... <span id="reload-timer">0.0</span>s</span>
+  </div>
+  <main id="contents" style="display: contents"><div  id="Flex_S7ezG2-gk" class="lay_xiBot1 pos_e8wtf3 mapa_FH1H21 vis_SWFkJ2 ">
+<div  id="Flex_nuQjl1-gk" class="lay_ODvvU3 pos_e8wtf3 mapa_TK4ER4 vis_SWFkJ2 ">
+<p  id="Text_bxNPe-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_M5bwP4 ">What is Senet?</p>
+<p  id="Text_HguQc-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_qkbxt3 ">To put simply, Senet is a toolbox of frameworks and libraries, that give developers the ability 
+to Build full-stack applications with zero dependencies, zero configuration, and complete control. </p>
+<p  id="Html_Gzcct3-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_1pF0t ">Senet was created out of personal frustration with the current state of web development. But also out of desire to create a solid foundation for which,
+future applications can be built on. You can use each component of Senet <code>[Vapor, Reverb, Canopy(coming soon)]</code> seperatley or together.</p>
+
+<p  id="Text_nz0RD-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_M5bwP4 ">{Vapor}</p>
+<p  id="Html_9zK7X3-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_1pF0t ">Vapor is a programming first frontend framework. Instead of using gimmicks like <strong>useState</strong> or <strong>useEffect</strong>,
+We write normal code, with variables, functions, and types. 
+These functions are used to create components, and variables are used to update the state of the component.</p>
+
+<p  id="Text_CGlZW3-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_lOnR6 ">Vapor state persists by default, navigation does not reset state</p>
+<p  id="Text_wr8NJ2-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_M5bwP4 ">{Reverb}</p>
+<p  id="Html_WPCXU-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_1pF0t ">Reverb is a simple, backend web framework, which exposes a a set of production grade libraries, but also gives the developer
+the ability to use high performance surgical tools, like the Atomic Lock-Free Thread Pool <code>[Scheduler]</code>.</p>
+
+<p  id="Text_OlnpH4-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_lOnR6 ">Reverb uses an express like syntax, but with a more modern feel</p>
+<p  id="Text_d4FXj3-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_M5bwP4 ">{Canopy} (Coming Soon)</p>
+<p  id="Html_ctsQW2-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_1pF0t ">Runs as a in memory cache at the front and a persistent database at the back. By default, it uses the RESP3 protocol, and has a similar API to SQL, 
+for creating and managing tables. Canopy also takes a more built-in approach, to creating custom selection queries. Instead of using SQL, Canopy uses a 
+Canopy exposes a variety of functions that intercept different stages of a request lifecycle. This allows for developers to build custom logic within 
+the database itself, rather than executing within a runtime environment. This means we can write Zig to create filter, search, join, or anything else we need.</p>
+
+<p  id="Text_mMpp23-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_lOnR6 ">Canopy uses Zig itself to create logic functions</p>
+<p  id="Text_YTuO1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_M5bwP4 ">{Samples}</p>
+<p  id="Html_tfUmA4-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_1pF0t ">Below is a set of sample applications, that were built with Senet, they are all single file, and can be downloaded and run.</p>
+
+<div  id="Flex_HACDO4-gk" class="lay_xKbwI4 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 ">
+<p  id="Text_XZjvx3-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_V8jPI3 vis_RT0se4 ">Sample Ecommerce App</p>
+<img  id="Imag_ZbazO2-gk" class="lay_CQSaD pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 " src="/assets/ryven.webp">
+</img>
+<p  id="Text_5HZ4a-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_V8jPI3 vis_RT0se4 ">Ryven Sql Editor</p>
+<img  id="Imag_WFl7g1-gk" class="lay_CQSaD pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 " src="/assets/ryven.png">
+</img>
+<p  id="Text_B8AUr2-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_V8jPI3 vis_RT0se4 ">UI Component Library</p>
+<img  id="Imag_gPfRN4-gk" class="lay_CQSaD pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 " src="/assets/vapor-ui.png">
+</img>
+</div>
+</div>
+</div>
+<div  id="nav" class="lay_02t2j pos_SdsMW2 mapa_CrkEb2 vis_z9VOY3 ">
+<div  id="Flex_fuXr62-gk" class="lay_4zlTI pos_e8wtf3 mapa_TK4ER4 vis_qrLvs3 ">
+<div  id="Flex_vgcXK-gk" class="lay_afHcj1 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 ">
+<button  id="CtxB_rcWkZ4-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_lMev51 "aria-label="home page of tether">
+<div  id="Flex_ZwaCr-gk" class="lay_j3qXP4 pos_e8wtf3 mapa_3GodU4 vis_bDheb3 intr_m5kAX3 ">
+<svg viewBox="0 0 528 379" xmlns="http://www.w3.org/2000/svg"   id="Svg_jNBo01-gk" class="lay_j73IP1 pos_e8wtf3 mapa_CrkEb2 vis_D8wWh3 intr_ZSRqZ3 ">
+
+<path d="M461.476 368.124L398.86 308.458C410.272 302.742 420.984 295.314 430.58 286.17C440.176 277.026 447.972 266.818 453.971 255.944L516.586 315.61C531.805 330.111 531.804 353.623 516.586 368.124C501.369 382.625 476.694 382.626 461.476 368.124Z" />
+<path d="M170.056 214.559C154.837 200.057 154.838 176.545 170.056 162.044C185.274 147.543 209.948 147.543 225.167 162.044L290.715 224.505C311.698 244.499 345.719 244.499 366.702 224.505C387.685 204.51 387.685 172.093 366.702 152.098L281.906 71.2982C328.525 54.6994 383.072 64.2597 420.56 99.9817C471.749 148.76 471.749 227.844 420.56 276.622C369.929 324.867 288.181 325.394 236.872 278.199L236.857 278.213L170.056 214.559Z" />
+<path d="M300.318 214.559L236.857 154.088C215.874 134.093 181.854 134.093 160.871 154.088C139.888 174.082 139.888 206.5 160.871 226.494L245.666 307.295C199.047 323.893 144.501 314.333 107.013 278.611C55.8232 229.833 55.824 150.748 107.013 101.971C158.201 53.1941 241.196 53.1933 292.386 101.971L355.429 162.044C370.647 176.546 370.647 200.058 355.429 214.559C340.211 229.06 315.536 229.06 300.318 214.559Z" />
+<path d="M66.5244 10.8759C51.306 -3.62559 26.6314 -3.62501 11.4136 10.8759C-3.80422 25.3767 -3.80483 48.8889 11.4136 63.3904L74.0293 123.056C80.0283 112.182 87.8238 101.974 97.4199 92.8304C107.016 83.6863 117.728 76.2581 129.14 70.5417L66.5244 10.8759Z" />
+
+</svg>
+</div>
+</button>
+<ul  id="List_gXukp2-gk" class="lay_2tI5F1 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 ">
+<li  id="List_lGI123-gk" class="lay_FQDJS1 pos_e8wtf3 mapa_CrkEb2 vis_86ALb3 intr_QHgsW2 "">
+<a  id="Link_JL8Nf3-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 " href="/docs/vapor">
+<p  id="Text_4q4Nr1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_DArr03 ">[0] = Vapor</p>
+</a>
+</li>
+<li  id="List_omalR-gk" class="lay_FQDJS1 pos_e8wtf3 mapa_CrkEb2 vis_86ALb3 intr_QHgsW2 "">
+<a  id="Link_f9IdX1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 " href="/docs/reverb">
+<p  id="Text_Hzcjv1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_DArr03 ">[1] = Reverb</p>
+</a>
+</li>
+<li  id="List_5YykA1-gk" class="lay_FQDJS1 pos_e8wtf3 mapa_CrkEb2 vis_86ALb3 intr_QHgsW2 "">
+<a  id="Link_mTIWu1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 " href="/docs/metal">
+<p  id="Text_66Y0m2-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_DArr03 ">[2] = Metal</p>
+</a>
+</li>
+</ul>
+</div>
+<div  id="Flex_dOVvC4-gk" class="lay_zKcgy2 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 ">
+<button  id="CtxB_95Rl61-gk" class="lay_k17UT4 pos_e8wtf3 mapa_4hFg71 vis_if79V2 intr_9uoaP4 "aria-label="Search Dialog">
+<div  id="Flex_6NLY93-gk" class="lay_u0Lld pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 ">
+<i  id="Icon_iY9dv1-gk" class="bi bi-search lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_vo30a4 ">
+</i>
+<p  id="Text_rokvx1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_U8hVm ">Search...</p>
+</div>
+<i  id="Icon_YZ3qH-gk" class="bi bi-command lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_vo30a4 ">
+</i>
+</button>
+<a  id="Redi_sagiH4-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 "aria-label="redirect link to tether github repo" href="https://github.com/vic-Rokx/vapor">
+<i  id="Icon_hg9eB4-gk" class="bi bi-github lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_otWl43 intr_Fn5JI ">
+</i>
+</a>
+<a  id="Redi_wHgHD3-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 "aria-label="redirect link to discord" href="https://github.com/vic-Rokx/vapor">
+<i  id="Icon_1Plon2-gk" class="bi bi-discord lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_otWl43 intr_Fn5JI ">
+</i>
+</a>
+<a  id="Redi_yBs381-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 "aria-label="redirect link to ziglang" href="https://ziglang.org/">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 153 140"   id="Svg_24CMz1-gk" class="lay_U5b1u1 pos_e8wtf3 mapa_ybnu51 vis_zTOro2 intr_K1hSW2 ">
+
+<g>
+	<g>
+		<polygon points="46,22 28,44 19,30"/>
+		<polygon points="46,22 33,33 28,44 22,44 22,95 31,95 20,100 12,117 0,117 0,22" shape-rendering="crispEdges"/>
+		<polygon points="31,95 12,117 4,106"/>
+	</g>
+	<g>
+		<polygon points="56,22 62,36 37,44"/>
+		<polygon points="56,22 111,22 111,44 37,44 56,32" shape-rendering="crispEdges"/>
+		<polygon points="116,95 97,117 90,104"/>
+		<polygon points="116,95 100,104 97,117 42,117 42,95" shape-rendering="crispEdges"/>
+		<polygon points="150,0 52,117 3,140 101,22"/>
+	</g>
+	<g>
+		<polygon points="141,22 140,40 122,45"/>
+		<polygon points="153,22 153,117 106,117 120,105 125,95 131,95 131,45 122,45 132,36 141,22" shape-rendering="crispEdges"/>
+		<polygon points="125,95 130,110 106,117"/>
+	</g>
+</g>
+
+</svg>
+</a>
+<button  id="CtxB_TiNoY1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_gyebf "aria-label="toggle theme">
+<i  id="Icon_QOo09-gk" class="bi bi-cloud-moon lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_otWl43 intr_Fn5JI ">
+</i>
+</button>
+</div>
+</div>
+</div>
+
+
+</div>
+</body>
+</html>

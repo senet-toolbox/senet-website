@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Tether</title>
+  <meta charset="utf-8" />
+  <meta name="google-site-verification" content="12aR_338F0VaglKbfvPLczdZV_Ej6AVx9Ef7M4ULfLU" />
+  <meta name="description"
+    content="Tether website includes documentation on all three components Fabric, Tether, and Treehouse. As well as instructions on installation and use cases." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
+  <link rel="preload" href="/zig-out/bin/vapor.wasm" as="fetch" type="application/wasm" crossorigin />
+  <!-- <script src="https://unpkg.com/lucide@latest"></script> -->
+
+  <!-- Preconnect stays the same -->
+  <link href="https://fonts.googleapis.com" />
+  <link href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://cdn.jsdelivr.net" crossorigin />
+
+  <!-- Load fonts async with media trick -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap"
+    rel="stylesheet" media="print" onload="this.media='all'" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:wght@400;700&display=swap"
+    rel="stylesheet" media="print" onload="this.media='all'" />
+
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" as="style"
+    onload="this.rel='stylesheet'" />
+
+  <!-- Font Awesome - non-blocking -->
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style"
+    onload="this.rel='stylesheet'" />
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" as="style"
+    onload="this.rel='stylesheet'" />
+
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css"
+    as="style" onload="this.rel='stylesheet'" />
+
+  <!-- Fallback for no-JS -->
+  <noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" />
+  </noscript>
+
+  <script type="module" src="/web/wasi_obj.js"></script>
+  <!-- <script type="module" src="/web/bundle.min.js"></script> -->
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Montserrat;
+      font-weight: 400;
+      height: 100vh;
+      width: 100%;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      background-color: rgba(var(--background));
+      color: rgb(var(--text_color));
+      transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+      scrollbar-width: none;
+      /* Firefox */
+      -ms-overflow-style: none;
+      /* IE/Edge */
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-scrollbar: display: none;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      /* Chrome, Safari, Opera */
+      margin: 0;
+    }
+
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      line-height: 1.5;
+      font-size-adjust: 0.5;
+    }
+
+    textarea {
+      line-height: 1.5;
+      font-size-adjust: 0.5;
+    }
+
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    input[type="file"]::file-selector-button {
+      background: transparent;
+      color: transparent;
+      border: none;
+    }
+
+    input:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px transparent inset;
+      -webkit-text-fill-color: inherit;
+      caret-color: inherit;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
+    /* Basic sidebar styling */
+    .onthispage a {
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    /* This is the class we will toggle */
+    .onthispage a.active {
+      color: dodgerblue;
+      font-weight: bold;
+      transform: scale(1.1);
+    }
+
+    .stats {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 14px;
+      z-index: 10000;
+      /* background-color: rgba(var(--background)); */
+      background-color: rgb(var(--background));
+      background-image: radial-gradient(circle, rgb(var(--text_color)) 0.5px, transparent 0px);
+      background-size: 20px 20px;
+      background-position: center center;
+      border-width: 1px;
+      border-style: solid;
+      border-color: rgb(var(--text_color));
+      box-shadow: 4px 4px 0px 0px rgb(var(--text_color));
+      text-decoration: none;
+      color: rgb(var(--text_color));
+    }
+
+    .reload-indicator {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 6px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      font-family: system-ui, sans-serif;
+      font-size: 14px;
+      z-index: 99999;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .reload-indicator.visible {
+      display: flex;
+    }
+
+    .reload-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid #333;
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="/static/style_variables.css" />
+  <link rel="stylesheet" href="/static/ui/commandpalette/style.css" />
+</head></head>
+
+<body>
+  <div class="stats" id="stats">
+    FPS: <span id="fps">0</span><br />
+    Frame Time: <span id="frameTime">0</span>ms<br />
+    Render Time: <span id="renderTime">0</span>ms<br />
+    Total Render Time: <span id="totalRenderTime">0</span>ms<br />
+  </div>
+  <div id="reload-indicator" class="reload-indicator">
+    <div class="reload-spinner"></div>
+    <span>Reloading... <span id="reload-timer">0.0</span>s</span>
+  </div>
+  <div id="contents" style="display: contents"><div  id="nav" class="lay_ZIMNZ2 pos_hN2RC1 mapa_obiMi2 vis_eJfG32 ">
+<div  id="Flex_fuXr62-gk" class="lay_dkXDo pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<button  id="CtxB_HDrlP3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CGJNE3 " aria-label="home page of tether">
+<div  id="Flex_D2v2g1-gk" class="lay_CMebU2 pos_McpnX1 mapa_3GodU4 vis_fLEVj intr_KNROO ">
+<div  id="Flex_wZ5aj-gk" class="lay_kSFpR4 pos_McpnX1 mapa_CrkEb2 vis_UQRjP2 intr_81j173 ">
+</div>
+</div>
+</button>
+<ul  id="List_xzQGR3-gk" class="lay_K4dMd2 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<li  id="List_GWwh42-gk" class="lay_1EjZF4 pos_McpnX1 mapa_CrkEb2 vis_yS0mN3 intr_cyYKa1 "">
+<a  id="Link_NKFIf2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 " aria-label="[0] = Docs" href="/vapor-ui/docs">
+<p  id="Text_T1O9Z1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_H7CDx ">[0] = Docs</p>
+</a>
+</li>
+<li  id="List_l33Tx3-gk" class="lay_1EjZF4 pos_McpnX1 mapa_CrkEb2 vis_yS0mN3 intr_cyYKa1 "">
+<a  id="Link_8nPHa1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 " aria-label="[1] = Components" href="/vapor-ui/components">
+<p  id="Text_P2VJu-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_H7CDx ">[1] = Components</p>
+</a>
+</li>
+<li  id="List_q8Ucq-gk" class="lay_1EjZF4 pos_McpnX1 mapa_CrkEb2 vis_yS0mN3 intr_cyYKa1 "">
+<a  id="Link_eqZ0W4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 " aria-label="[2] = Templates" href="/vapor-ui/templates">
+<p  id="Text_PUd0h3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_H7CDx ">[2] = Templates</p>
+</a>
+</li>
+<li  id="List_K0AD6-gk" class="lay_1EjZF4 pos_McpnX1 mapa_CrkEb2 vis_yS0mN3 intr_cyYKa1 "">
+<a  id="Link_R7dHs-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 " aria-label="[3] = Authentication" href="/vapor-ui/auth">
+<p  id="Text_shGhX3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_H7CDx ">[3] = Authentication</p>
+</a>
+</li>
+<li  id="List_GEoS54-gk" class="lay_1EjZF4 pos_McpnX1 mapa_CrkEb2 vis_yS0mN3 intr_cyYKa1 "">
+<a  id="Link_7HUpz2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 " aria-label="[4] = Payments" href="/vapor-ui/payment">
+<p  id="Text_qxIBT-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_H7CDx ">[4] = Payments</p>
+</a>
+</li>
+</ul>
+</div>
+<div  id="Flex_rkECq2-gk" class="lay_SnP052 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<div  id="Flex_yd2ld2-gk" class="lay_vekkG4 pos_McpnX1 mapa_jarwO1 vis_aqVpO4 ">
+<div  id="Flex_dWP0R-gk" class="lay_HKTla3 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<div  id="Hook_LLc2h2-gk">
+<button  id="CtxB_5uQY32-gk" class="lay_CQSaD pos_McpnX1 mapa_CrkEb2 vis_rP0fw intr_B02QS ">
+<button  id="CtxB_bHMMz1-gk" class="lay_VQ15M3 pos_Ch7rg3 mapa_ZJR9B1 vis_Ue2ic1 ">
+
+
+<p  id="Text_n10HS3-gk" style="transform: translateY(0%) scale(1);" class="lay_1I8dE4 pos_GxJgd2 mapa_sgnwh vis_CnlQE1 ">Search</p>
+<div  id="Flex_hOCTZ3-gk" class="lay_ZtX241 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<i  id="Flex_gsxsZ2-gk" class="bi bi-command lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ow62l ">
+</i>
+<p  id="Text_gRboD3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ow62l ">K</p>
+</div>
+</button>
+</button>
+</div>
+</div>
+</div>
+<a  id="Redi_XP5t71-gk" class="nav-item" aria-label="redirect link to tether github repo" href="https://github.com/vic-Rokx/vapor">
+<i  id="Flex_jarbM4-gk" class="bi bi-github nav-item-icon">
+</i>
+</a>
+<a  id="Redi_EKVG14-gk" class="nav-item" aria-label="redirect link to discord" href="https://github.com/vic-Rokx/vapor">
+<i  id="Flex_81P0W-gk" class="bi bi-discord nav-item-icon">
+</i>
+</a>
+<button  id="Butt_6CIIn2-gk" class="nav-item" aria-label="toggle theme">
+<i  id="Flex_gpZFb1-gk" class="bi bi-cloud-moon nav-item-icon">
+</i>
+</button>
+</div>
+</div>
+<div  id="Flex_Ym7PE1-gk" class="lay_fcXl83 pos_G6HFg4 mapa_CrkEb2 vis_EQXTI4 ">
+<ul  id="List_WWVgA1-gk" class="lay_k7bGB4 pos_McpnX1 mapa_bnttp vis_UqYHp2 ">
+<li  id="menu-/ui/chart" class="lay_AAqfn3 pos_McpnX1 mapa_CrkEb2 vis_nvnn24 intr_yXIqs1 "">
+<button  id="CtxB_IE1Vg1-gk" class="lay_IvyKF pos_McpnX1 mapa_3Qb5v vis_sNQbO1 ">
+<p  id="Text_GY5fI-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_KA9eK1 ">Chart</p>
+</button>
+</li>
+<li  id="menu-/ui/combobox" class="lay_AAqfn3 pos_McpnX1 mapa_CrkEb2 vis_nvnn24 intr_yXIqs1 "">
+<button  id="CtxB_DXEDh1-gk" class="lay_IvyKF pos_McpnX1 mapa_3Qb5v vis_sNQbO1 ">
+<p  id="Text_DR8CI1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_KA9eK1 ">Combobox</p>
+</button>
+</li>
+<li  id="menu-/ui/table" class="lay_AAqfn3 pos_McpnX1 mapa_CrkEb2 vis_nvnn24 intr_yXIqs1 "">
+<button  id="CtxB_XgHac1-gk" class="lay_IvyKF pos_McpnX1 mapa_3Qb5v vis_sNQbO1 ">
+<p  id="Text_i7Qes-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_KA9eK1 ">Table</p>
+</button>
+</li>
+<li  id="menu-/ui/select" class="lay_AAqfn3 pos_McpnX1 mapa_CrkEb2 vis_nvnn24 intr_yXIqs1 "">
+<button  id="CtxB_qNNBs-gk" class="lay_IvyKF pos_McpnX1 mapa_3Qb5v vis_sNQbO1 ">
+<p  id="Text_Ww21f-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_KA9eK1 ">Select</p>
+</button>
+</li>
+<li  id="menu-/ui/slider" class="lay_AAqfn3 pos_McpnX1 mapa_CrkEb2 vis_nvnn24 intr_yXIqs1 "">
+<button  id="CtxB_SoWJY2-gk" class="lay_IvyKF pos_McpnX1 mapa_3Qb5v vis_sNQbO1 ">
+<p  id="Text_ndX6G-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_KA9eK1 ">Slider</p>
+</button>
+</li>
+<li  id="menu-/ui/dialog" class="lay_AAqfn3 pos_McpnX1 mapa_CrkEb2 vis_nvnn24 intr_yXIqs1 "">
+<button  id="CtxB_gxGi42-gk" class="lay_IvyKF pos_McpnX1 mapa_3Qb5v vis_sNQbO1 ">
+<p  id="Text_swt464-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_KA9eK1 ">Dialog</p>
+</button>
+</li>
+<li  id="menu-/ui/button" class="lay_AAqfn3 pos_McpnX1 mapa_CrkEb2 vis_nvnn24 intr_yXIqs1 "">
+<button  id="CtxB_OAycE4-gk" class="lay_IvyKF pos_McpnX1 mapa_3Qb5v vis_sNQbO1 ">
+<p  id="Text_ZJLOR1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_KA9eK1 ">Button</p>
+</button>
+</li>
+<li  id="menu-/ui/textfield" class="lay_AAqfn3 pos_McpnX1 mapa_CrkEb2 vis_nvnn24 intr_yXIqs1 "">
+<button  id="CtxB_iKbhS4-gk" class="lay_IvyKF pos_McpnX1 mapa_3Qb5v vis_sNQbO1 ">
+<p  id="Text_8M1jy1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_KA9eK1 ">TextField</p>
+</button>
+</li>
+<li  id="menu-/ui/datepicker" class="lay_AAqfn3 pos_McpnX1 mapa_CrkEb2 vis_nvnn24 intr_yXIqs1 "">
+<button  id="CtxB_m0Myb3-gk" class="lay_IvyKF pos_McpnX1 mapa_3Qb5v vis_sNQbO1 ">
+<p  id="Text_0PDj14-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_KA9eK1 ">DatePicker</p>
+</button>
+</li>
+<li  id="menu-/ui/commandpalette" class="lay_AAqfn3 pos_McpnX1 mapa_CrkEb2 vis_nvnn24 intr_yXIqs1 "">
+<button  id="CtxB_3Xlb82-gk" class="lay_IvyKF pos_McpnX1 mapa_3Qb5v vis_sNQbO1 ">
+<p  id="Text_ELZ8Y-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_KA9eK1 ">CommandPalette</p>
+</button>
+</li>
+<li  id="menu-/ui/drawer" class="lay_AAqfn3 pos_McpnX1 mapa_CrkEb2 vis_nvnn24 intr_yXIqs1 "">
+<button  id="CtxB_OLfFL-gk" class="lay_IvyKF pos_McpnX1 mapa_3Qb5v vis_sNQbO1 ">
+<p  id="Text_LRyxp3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_KA9eK1 ">Drawer</p>
+</button>
+</li>
+<li  id="menu-/ui/sheet" class="lay_AAqfn3 pos_McpnX1 mapa_CrkEb2 vis_nvnn24 intr_yXIqs1 "">
+<button  id="CtxB_VOsEa3-gk" class="lay_IvyKF pos_McpnX1 mapa_3Qb5v vis_sNQbO1 ">
+<p  id="Text_tt7BD1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_KA9eK1 ">Sheet</p>
+</button>
+</li>
+<li  id="menu-/ui/tabs" class="lay_AAqfn3 pos_McpnX1 mapa_CrkEb2 vis_nvnn24 intr_yXIqs1 "">
+<button  id="CtxB_zi7NF3-gk" class="lay_IvyKF pos_McpnX1 mapa_3Qb5v vis_sNQbO1 ">
+<p  id="Text_SolHq3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_KA9eK1 ">Tabs</p>
+</button>
+</li>
+<li  id="menu-/ui/switch" class="lay_AAqfn3 pos_McpnX1 mapa_CrkEb2 vis_nvnn24 intr_yXIqs1 "">
+<button  id="CtxB_jX6VD1-gk" class="lay_IvyKF pos_McpnX1 mapa_3Qb5v vis_sNQbO1 ">
+<p  id="Text_8ACjW-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_KA9eK1 ">Switch</p>
+</button>
+</li>
+<li  id="menu-/ui/group" class="lay_AAqfn3 pos_McpnX1 mapa_CrkEb2 vis_nvnn24 intr_yXIqs1 "">
+<button  id="CtxB_1EonS3-gk" class="lay_IvyKF pos_McpnX1 mapa_3Qb5v vis_sNQbO1 ">
+<p  id="Text_p98qg1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_KA9eK1 ">Group</p>
+</button>
+</li>
+<li  id="menu-/ui/accordion" class="lay_AAqfn3 pos_McpnX1 mapa_CrkEb2 vis_nvnn24 intr_yXIqs1 "">
+<button  id="CtxB_pi94R4-gk" class="lay_IvyKF pos_McpnX1 mapa_3Qb5v vis_sNQbO1 ">
+<p  id="Text_G7QI64-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_KA9eK1 ">Accordion</p>
+</button>
+</li>
+</ul>
+</div>
+<div  id="Spac_Fr0Wl3-gk" class="lay_r9Ada4 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+</div>
+<div  id="Flex_mljX03-gk" class="lay_PqEkO3 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<div  id="Flex_cffFQ3-gk" class="lay_cZ1KB4 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<p  id="Text_9qF673-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_0xuro ">command-palette-ui ⇒</p>
+<p  id="Text_e7bOA3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_6vxRg3 ">command-palette-ui</p>
+<p  id="Text_g136I4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_pxi7P2 ">A collection of ready-to-use command-palette components built on top of Vapor. Copy and paste into your apps.</p>
+</div>
+<div  id="Flex_rK0p51-gk" class="lay_DHWKs pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<p  id="Text_9Zvmi3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_QtZHC4 ">Command Palette</p>
+<p  id="Text_00Mk92-gk" class="lay_1I8dE4 pos_McpnX1 mapa_YIvzW1 vis_ALmSa ">Displays a command-palette or a component that looks like a command-palette.</p>
+<p  id="Text_5fgEp-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_A8fUz1 ">Primary</p>
+<div  id="Flex_d3TfM-gk" class="lay_evRjJ2 pos_McpnX1 mapa_3RP2h2 vis_d2yZ01 ">
+<div  id="Flex_BJi0W2-gk" class="lay_HKTla3 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<div  id="Hook_8OIHN3-gk">
+<button  id="CtxB_p2tfX3-gk" class="lay_CQSaD pos_McpnX1 mapa_CrkEb2 vis_rP0fw intr_B02QS ">
+<button  id="CtxB_WXpYs3-gk" class="lay_VQ15M3 pos_Ch7rg3 mapa_ZJR9B1 vis_Ue2ic1 ">
+
+
+<p  id="Text_rMVII4-gk" style="transform: translateY(0%) scale(1);" class="lay_1I8dE4 pos_GxJgd2 mapa_sgnwh vis_CnlQE1 ">Search...</p>
+<div  id="Flex_IhRJ11-gk" class="lay_ZtX241 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<i  id="Flex_LeorN3-gk" class="bi bi-command lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ow62l ">
+</i>
+<p  id="Text_2vVyW3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ow62l ">J</p>
+</div>
+</button>
+</button>
+</div>
+</div>
+</div>
+<p  id="Text_xg3S84-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_A8fUz1 ">Secondary</p>
+<div  id="Flex_WUSTc4-gk" class="lay_evRjJ2 pos_McpnX1 mapa_3RP2h2 vis_d2yZ01 ">
+<div  id="Flex_eTTrO-gk" class="lay_HKTla3 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<div  id="Hook_Y4yxu1-gk">
+<button  id="CtxB_hhNke2-gk" class="lay_CQSaD pos_McpnX1 mapa_CrkEb2 vis_rP0fw intr_B02QS ">
+<button  id="CtxB_MTaIa-gk" class="lay_VQ15M3 pos_Ch7rg3 mapa_ZJR9B1 vis_Ue2ic1 ">
+
+
+<p  id="Text_fXffc1-gk" style="transform: translateY(0%) scale(1);" class="lay_1I8dE4 pos_GxJgd2 mapa_sgnwh vis_CnlQE1 ">Open Dialog...</p>
+<div  id="Flex_hKOom1-gk" class="lay_ZtX241 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<i  id="Flex_0pybL2-gk" class="bi bi-command lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ow62l ">
+</i>
+<p  id="Text_QsDCD1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ow62l ">I</p>
+</div>
+</button>
+</button>
+</div>
+</div>
+</div>
+<p  id="Text_QZgSw3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_ZJums2 vis_aWrp83 ">Installation</p>
+<p  id="Text_LxUM41-gk" class="lay_1I8dE4 pos_McpnX1 mapa_0Ngye4 vis_CRb9I2 ">Install the command-palette component from your command line.</p>
+<div  id="Flex_WaLl32-gk" class="lay_AEgkh1 pos_McpnX1 mapa_WM2Wg4 vis_wriXp3 ">
+<p  id="Text_NvNsD1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ABsyC ">vapor add command-palette</p>
+</div>
+<p  id="Text_OWKMB-gk" class="lay_1I8dE4 pos_McpnX1 mapa_ZJums2 vis_aWrp83 ">Usage</p>
+<p  id="Text_xfOtY3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_0Ngye4 vis_CRb9I2 ">Import and use the Button component in your code.</p>
+<div  id="Flex_dnPiJ3-gk" class="lay_AEgkh1 pos_McpnX1 mapa_WM2Wg4 vis_wriXp3 ">
+<p  id="Text_OKGiq1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ABsyC ">const Button = @import("components/Button.zig").Button;</p>
+</div>
+<p  id="Text_7iXnu2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_ZJums2 vis_aWrp83 ">Examples</p>
+<p  id="Text_ydEdr-gk" class="lay_1I8dE4 pos_McpnX1 mapa_tsrSN vis_V1QSp2 ">Primary</p>
+<div  id="Flex_RsCpS1-gk" class="lay_AEgkh1 pos_McpnX1 mapa_WM2Wg4 vis_wriXp3 ">
+<p  id="Text_jTivh2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ABsyC ">Button(handleClick, .{})
+    .background(.palette(.tint))
+    .children({
+        Text("Primary").end();
+    });</p>
+</div>
+<p  id="Text_lTVKy3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_tsrSN vis_V1QSp2 ">Secondary</p>
+<div  id="Flex_i7dFx1-gk" class="lay_AEgkh1 pos_McpnX1 mapa_WM2Wg4 vis_wriXp3 ">
+<p  id="Text_6Sop24-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ABsyC ">Button(handleClick, .{})
+    .background(.transparent)
+    .border(.round(.palette(.border_color_light), .all(8)))
+    .children({
+        Text("Secondary").end();
+    });</p>
+</div>
+<p  id="Text_8OuTW1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_tsrSN vis_V1QSp2 ">With Icon</p>
+<div  id="Flex_grQuB4-gk" class="lay_AEgkh1 pos_McpnX1 mapa_WM2Wg4 vis_wriXp3 ">
+<p  id="Text_WLOG7-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ABsyC ">Button(handleClick, .{})
+    .children({
+        Icon(.arrow_right).end();
+        Text("Continue").end();
+    });</p>
+</div>
+<p  id="Text_rWPcP4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_ZJums2 vis_aWrp83 ">API Reference</p>
+<p  id="Text_tmvwE2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_0Ngye4 vis_CRb9I2 ">The Button component accepts the following properties.</p>
+<div  id="Flex_Ha2sd2-gk" class="lay_AEgkh1 pos_McpnX1 mapa_WM2Wg4 vis_wriXp3 ">
+<p  id="Text_pVdSD1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ABsyC ">// Handler and arguments
+Button(handler_fn, .{ arg1, arg2 })
+
+// Styling
+.background(.palette(.tint))
+.border(.round(.palette(.border_color_light), .all(8)))
+.padding(.xy(16, 10))
+.layout(.center)
+.spacing(8)</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

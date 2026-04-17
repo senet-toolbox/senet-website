@@ -1,0 +1,2413 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Tether</title>
+  <meta charset="utf-8" />
+  <meta name="google-site-verification" content="12aR_338F0VaglKbfvPLczdZV_Ej6AVx9Ef7M4ULfLU" />
+  <meta name="description"
+    content="Tether website includes documentation on all three components Fabric, Tether, and Treehouse. As well as instructions on installation and use cases." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
+  <link rel="preload" href="/zig-out/bin/vapor.wasm" as="fetch" type="application/wasm" crossorigin />
+  <!-- <script src="https://unpkg.com/lucide@latest"></script> -->
+
+  <!-- Preconnect stays the same -->
+  <link href="https://fonts.googleapis.com" />
+  <link href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://cdn.jsdelivr.net" crossorigin />
+
+  <!-- Load fonts async with media trick -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap"
+    rel="stylesheet" media="print" onload="this.media='all'" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:wght@400;700&display=swap"
+    rel="stylesheet" media="print" onload="this.media='all'" />
+
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" as="style"
+    onload="this.rel='stylesheet'" />
+
+  <!-- Font Awesome - non-blocking -->
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style"
+    onload="this.rel='stylesheet'" />
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" as="style"
+    onload="this.rel='stylesheet'" />
+
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css"
+    as="style" onload="this.rel='stylesheet'" />
+
+  <!-- Fallback for no-JS -->
+  <noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" />
+  </noscript>
+
+  <script type="module" src="/web/wasi_obj.js"></script>
+  <!-- <script type="module" src="/web/bundle.min.js"></script> -->
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Montserrat;
+      font-weight: 400;
+      height: 100vh;
+      width: 100%;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      background-color: rgba(var(--background));
+      color: rgb(var(--text_color));
+      transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+      scrollbar-width: none;
+      /* Firefox */
+      -ms-overflow-style: none;
+      /* IE/Edge */
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-scrollbar: display: none;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      /* Chrome, Safari, Opera */
+      margin: 0;
+    }
+
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      line-height: 1.5;
+      font-size-adjust: 0.5;
+    }
+
+    textarea {
+      line-height: 1.5;
+      font-size-adjust: 0.5;
+    }
+
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    input[type="file"]::file-selector-button {
+      background: transparent;
+      color: transparent;
+      border: none;
+    }
+
+    input:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px transparent inset;
+      -webkit-text-fill-color: inherit;
+      caret-color: inherit;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
+    /* Basic sidebar styling */
+    .onthispage a {
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    /* This is the class we will toggle */
+    .onthispage a.active {
+      color: dodgerblue;
+      font-weight: bold;
+      transform: scale(1.1);
+    }
+
+    .stats {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 14px;
+      z-index: 10000;
+      /* background-color: rgba(var(--background)); */
+      background-color: rgb(var(--background));
+      background-image: radial-gradient(circle, rgb(var(--text_color)) 0.5px, transparent 0px);
+      background-size: 20px 20px;
+      background-position: center center;
+      border-width: 1px;
+      border-style: solid;
+      border-color: rgb(var(--text_color));
+      box-shadow: 4px 4px 0px 0px rgb(var(--text_color));
+      text-decoration: none;
+      color: rgb(var(--text_color));
+    }
+
+    .reload-indicator {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 6px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      font-family: system-ui, sans-serif;
+      font-size: 14px;
+      z-index: 99999;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .reload-indicator.visible {
+      display: flex;
+    }
+
+    .reload-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid #333;
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="/static/style_variables.css" />
+  <link rel="stylesheet" href="/static/ui/select/style.css" />
+</head></head>
+
+<body>
+  <div class="stats" id="stats">
+    FPS: <span id="fps">0</span><br />
+    Frame Time: <span id="frameTime">0</span>ms<br />
+    Render Time: <span id="renderTime">0</span>ms<br />
+    Total Render Time: <span id="totalRenderTime">0</span>ms<br />
+  </div>
+  <div id="reload-indicator" class="reload-indicator">
+    <div class="reload-spinner"></div>
+    <span>Reloading... <span id="reload-timer">0.0</span>s</span>
+  </div>
+  <div id="contents" style="display: contents"><div  id="nav" class="lay_ZIMNZ2 pos_hN2RC1 mapa_obiMi2 vis_eJfG32 ">
+<div  id="Flex_fuXr62-gk" class="lay_dkXDo pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<button  id="CtxB_HDrlP3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CGJNE3 " aria-label="home page of tether">
+<div  id="Flex_D2v2g1-gk" class="lay_CMebU2 pos_McpnX1 mapa_3GodU4 vis_fLEVj intr_KNROO ">
+<div  id="Flex_wZ5aj-gk" class="lay_kSFpR4 pos_McpnX1 mapa_CrkEb2 vis_UQRjP2 intr_81j173 ">
+</div>
+</div>
+</button>
+<ul  id="List_xzQGR3-gk" class="lay_K4dMd2 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<li  id="List_GWwh42-gk" class="lay_1EjZF4 pos_McpnX1 mapa_CrkEb2 vis_yS0mN3 intr_cyYKa1 "">
+<a  id="Link_NKFIf2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 " aria-label="[1] = Components" href="/vapor-ui/components">
+<p  id="Text_T1O9Z1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_H7CDx ">[1] = Components</p>
+</a>
+</li>
+<li  id="List_l33Tx3-gk" class="lay_1EjZF4 pos_McpnX1 mapa_CrkEb2 vis_yS0mN3 intr_cyYKa1 "">
+<a  id="Link_8nPHa1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 " aria-label="[2] = Templates" href="/vapor-ui/templates">
+<p  id="Text_P2VJu-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_H7CDx ">[2] = Templates</p>
+</a>
+</li>
+<li  id="List_q8Ucq-gk" class="lay_1EjZF4 pos_McpnX1 mapa_CrkEb2 vis_yS0mN3 intr_cyYKa1 "">
+<a  id="Link_eqZ0W4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 " aria-label="[3] = Authentication" href="/vapor-ui/auth">
+<p  id="Text_PUd0h3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_H7CDx ">[3] = Authentication</p>
+</a>
+</li>
+<li  id="List_K0AD6-gk" class="lay_1EjZF4 pos_McpnX1 mapa_CrkEb2 vis_yS0mN3 intr_cyYKa1 "">
+<a  id="Link_R7dHs-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 " aria-label="[4] = Payments" href="/vapor-ui/payment">
+<p  id="Text_shGhX3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_H7CDx ">[4] = Payments</p>
+</a>
+</li>
+</ul>
+</div>
+<div  id="Flex_rkECq2-gk" class="lay_SnP052 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<div  id="Flex_yd2ld2-gk" class="lay_vekkG4 pos_McpnX1 mapa_jarwO1 vis_aqVpO4 ">
+<div  id="Flex_dWP0R-gk" class="lay_HKTla3 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<div  id="Hook_LLc2h2-gk">
+<button  id="CtxB_5uQY32-gk" class="lay_CQSaD pos_McpnX1 mapa_CrkEb2 vis_rP0fw intr_B02QS ">
+<button  id="CtxB_bHMMz1-gk" class="lay_VQ15M3 pos_Ch7rg3 mapa_ZJR9B1 vis_Ue2ic1 ">
+
+
+<p  id="Text_n10HS3-gk" style="transform: translateY(0%) scale(1);" class="lay_1I8dE4 pos_GxJgd2 mapa_sgnwh vis_CnlQE1 ">Search</p>
+<div  id="Flex_hOCTZ3-gk" class="lay_ZtX241 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<i  id="Flex_gsxsZ2-gk" class="bi bi-command lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ow62l ">
+</i>
+<p  id="Text_gRboD3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ow62l ">K</p>
+</div>
+</button>
+</button>
+</div>
+</div>
+</div>
+<a  id="Redi_XP5t71-gk" class="nav-item" aria-label="redirect link to tether github repo" href="https://github.com/vic-Rokx/vapor">
+<i  id="Flex_jarbM4-gk" class="bi bi-github nav-item-icon">
+</i>
+</a>
+<a  id="Redi_EKVG14-gk" class="nav-item" aria-label="redirect link to discord" href="https://github.com/vic-Rokx/vapor">
+<i  id="Flex_81P0W-gk" class="bi bi-discord nav-item-icon">
+</i>
+</a>
+<button  id="Butt_6CIIn2-gk" class="nav-item" aria-label="toggle theme">
+<i  id="Flex_gpZFb1-gk" class="bi bi-cloud-moon nav-item-icon">
+</i>
+</button>
+</div>
+</div>
+<div  id="Flex_Ym7PE1-gk" class="lay_PqEkO3 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<div  id="Flex_5x7Mw2-gk" class="lay_cZ1KB4 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<p  id="Text_lisRe2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_0xuro ">select-ui ⇒</p>
+<p  id="Text_zR4pR1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_6vxRg3 ">select-ui</p>
+<p  id="Text_hPgBy3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_pxi7P2 ">A collection of ready-to-use select components built on top of Vapor, copy and paste into your apps.</p>
+</div>
+<div  id="Flex_hPmMZ3-gk" class="lay_mVnbT2 pos_McpnX1 mapa_jHAIQ vis_aqVpO4 ">
+<p  id="Text_DyzGE3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_9SPU2 vis_A8fUz1 ">Basic</p>
+<p  id="Text_HnuO21-gk" class="lay_1I8dE4 pos_McpnX1 mapa_0Ngye4 vis_CRb9I2 ">A simple select with a flat list of items.</p>
+<div  id="Flex_Jsu574-gk" class="lay_evRjJ2 pos_McpnX1 mapa_3RP2h2 vis_d2yZ01 ">
+<div  id="Flex_Wualb-gk" class="lay_LVrlx pos_Ch7rg3 mapa_CrkEb2 vis_aqVpO4 ">
+<div  id="Flex_oSSnc2-gk" class="lay_tupWc4 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<button  id="CtxB_GN5ab3-gk" class="lay_CQSaD pos_McpnX1 mapa_rPfvm1 vis_nhPHj3 intr_bzfvQ4 " aria-label="Select Dropdown">
+<div  id="Flex_8h6re4-gk" class="lay_1wHVY1 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<p  id="Text_QrE8I2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_RM5YV3 vis_3SOxb4 ">Select</p>
+<i  id="Flex_Kki4t1-gk" class="bi bi-chevron-down lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_W8eCU ">
+</i>
+</div>
+</button>
+</div>
+<div  id="Flex_OWKC44-gk" style="transform: translate(0px, 0px)" class="lay_AEgkh1 pos_alsPv2 mapa_CrkEb2 vis_aqVpO4 ">
+
+
+</div>
+
+
+</div>
+</div>
+<div  id="Flex_xX4ue-gk" class="lay_VJgdf2 pos_McpnX1 mapa_CrkEb2 vis_qF4SC ">
+<div  id="Flex_2YcRj3-gk" class="lay_x4rOR3 pos_Ch7rg3 mapa_CrkEb2 vis_EQXTI4 ">
+<div  id="Flex_lm9WJ-gk" class="lay_1wHVY1 pos_McpnX1 mapa_GjRnP2 vis_ZnFxF2 ">
+<div  id="Flex_XtYR11-gk" class="lay_ZBnm33 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_iHaAV2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_TNP1Y ">Example</p>
+</div>
+<div  id="Flex_sfPH13-gk" class="lay_KLp082 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<button  id="CtxB_q39ZP3-gk" class="lay_Qz8uf pos_Ch7rg3 mapa_CrkEb2 vis_SrlsS intr_r59Iz3 " aria-label="copy-code-button">
+<i  id="Flex_M9uNG4-gk" class="bi bi-clipboard lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_t7Mhm ">
+</i>
+</button>
+<div  id="Flex_fvuMm3-gk" class="lay_DXNE72 pos_McpnX1 mapa_CrkEb2 vis_0Xrah2 ">
+</div>
+</div>
+</div>
+<div  id="Flex_Iuowq-gk" class="lay_H7iHV3 pos_McpnX1 mapa_Fls5t vis_EQXTI4 ">
+<code  id="Code_dBdPo2-gk">
+<div  id="Flex_vdIVx2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_eXiTX4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">1</p>
+<div  id="Flex_kuHyw1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_9ocwr2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_r8XSQ ">// examples/BasicSelect.zig</p>
+</div>
+</div>
+<div  id="Flex_UjKJA2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_eB1SP4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">2</p>
+<div  id="Flex_oIiwM1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_IBS4o3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_ID9c24-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Vapor = @import(</p>
+<p  id="Text_jMmyg-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"vapor"</p>
+<p  id="Text_yFNwX-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">);</p>
+</div>
+</div>
+<div  id="Flex_v66Pa3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_EGT1p-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">3</p>
+<div  id="Flex_DP1mU-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_UQQCf3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_InloH4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Opaque = @import(</p>
+<p  id="Text_SiQnp3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"../../../../components/Opaque.zig"</p>
+<p  id="Text_ctCcy3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">);</p>
+</div>
+</div>
+<div  id="Flex_DlLF5-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_MQXV13-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">4</p>
+<div  id="Flex_9czsR1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_0KnEf2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_tvNQi3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Select = Opaque.Select;</p>
+</div>
+</div>
+<div  id="Flex_4k3mt-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_8nxGE1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">5</p>
+<div  id="Flex_whvoJ4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_5J50t-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_j72lc2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">6</p>
+<div  id="Flex_eNK423-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_AuhKd1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_trIWT4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Status = </p>
+<p  id="Text_ylHF93-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">enum</p>
+<p  id="Text_3NP8M-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> {</p>
+</div>
+</div>
+<div  id="Flex_Op0bN4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_miaj81-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">7</p>
+<div  id="Flex_O5V5N-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_g2ksu2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    pending,</p>
+</div>
+</div>
+<div  id="Flex_qV28j-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_kRm7G3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">8</p>
+<div  id="Flex_hHyy33-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_TUmY74-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    success,</p>
+</div>
+</div>
+<div  id="Flex_5bvuf1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_6iw8C1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">9</p>
+<div  id="Flex_2lvvX3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_ZdjC2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    err,</p>
+</div>
+</div>
+<div  id="Flex_0sPyB2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_fM8oJ4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">10</p>
+<div  id="Flex_1ig8E1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_Ru6Kw2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">};</p>
+</div>
+</div>
+<div  id="Flex_5T8ER-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_89mmA3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">11</p>
+<div  id="Flex_4AtlW4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_3ziu-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_GXFcY2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">12</p>
+<div  id="Flex_6fjHy3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_7traO3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">var</p>
+<p  id="Text_Cih8C3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> select: </p>
+<p  id="Text_Y0lax3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Select</p>
+<p  id="Text_xO8K04-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(Status) = undefined;</p>
+</div>
+</div>
+<div  id="Flex_l7ccU1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_DJ75u-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">13</p>
+<div  id="Flex_wB8vH-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_rXi28-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_rPART2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">14</p>
+<div  id="Flex_zEc623-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_ApP531-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">pub</p>
+<p  id="Text_OyoOD3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_v7Xfs3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">fn</p>
+<p  id="Text_TBjFw3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_Q0o4Z4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">init</p>
+<p  id="Text_H9GhW-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">() void {</p>
+</div>
+</div>
+<div  id="Flex_6EE9f-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_1Rpzs1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">15</p>
+<div  id="Flex_ic0LB2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_b2NPd1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    select = .</p>
+<p  id="Text_mngw31-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">fromItems</p>
+<p  id="Text_NF44T3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(&.{</p>
+</div>
+</div>
+<div  id="Flex_M1ju6-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_2MTuK-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">16</p>
+<div  id="Flex_H7UIz2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_jMNNg4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .{ .value = Status.pending, .label = </p>
+<p  id="Text_3io5L1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Pending"</p>
+<p  id="Text_jkwbD3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_Z9tyZ-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_NYyLd4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">17</p>
+<div  id="Flex_RFcj41-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_JUWdu3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .{ .value = Status.success, .label = </p>
+<p  id="Text_Yka1b3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Success"</p>
+<p  id="Text_gdJwT-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_gI55f1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_MPagE2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">18</p>
+<div  id="Flex_gtcm21-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_GLnjm2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .{ .value = Status.err, .label = </p>
+<p  id="Text_t1faC2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Error"</p>
+<p  id="Text_yaZBt1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_Qe9vY1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_otKXA4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">19</p>
+<div  id="Flex_Vwaho2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_BvOUV4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    });</p>
+</div>
+</div>
+<div  id="Flex_qZxqo2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_9ZTvS1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">20</p>
+<div  id="Flex_jAibS4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_aZron2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">}</p>
+</div>
+</div>
+<div  id="Flex_9Eopg1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_haj883-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">21</p>
+<div  id="Flex_7aM8N3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_orgt4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_fSK3k-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">22</p>
+<div  id="Flex_CmxyN1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_7eWlg1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">pub</p>
+<p  id="Text_CmgYc1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_MYVLT-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">fn</p>
+<p  id="Text_MCWms1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_OgsD2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">render</p>
+<p  id="Text_8nzxA3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">() void {</p>
+</div>
+</div>
+<div  id="Flex_zdsKS2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_tffW33-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">23</p>
+<div  id="Flex_8RX5W-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_lxtnG3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    select.</p>
+<p  id="Text_wspQq3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">render</p>
+<p  id="Text_XZcQ1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">();</p>
+</div>
+</div>
+<div  id="Flex_Nvnpz3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_ajPnG2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">24</p>
+<div  id="Flex_oqEau-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_7t83h1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">}</p>
+</div>
+</div>
+<div  id="Flex_9i6YK2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_hGP5g4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">25</p>
+<div  id="Flex_fXGbf2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+</code>
+</div>
+</div>
+</div>
+<p  id="Text_AnuF-gk" class="lay_1I8dE4 pos_McpnX1 mapa_9SPU2 vis_A8fUz1 ">With Icons</p>
+<p  id="Text_HITJZ3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_0Ngye4 vis_CRb9I2 ">Items can include icons for visual clarity.</p>
+<div  id="Flex_ZWS854-gk" class="lay_evRjJ2 pos_McpnX1 mapa_3RP2h2 vis_d2yZ01 ">
+<div  id="Flex_w2IRr1-gk" class="lay_LVrlx pos_Ch7rg3 mapa_CrkEb2 vis_aqVpO4 ">
+<div  id="Flex_bisQ42-gk" class="lay_tupWc4 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<button  id="CtxB_DJxAR-gk" class="lay_CQSaD pos_McpnX1 mapa_rPfvm1 vis_nhPHj3 intr_bzfvQ4 " aria-label="Select Dropdown">
+<div  id="Flex_Lt8QO2-gk" class="lay_1wHVY1 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<p  id="Text_ssjFl3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_RM5YV3 vis_3SOxb4 ">Science Tools</p>
+<i  id="Flex_xKNN61-gk" class="bi bi-chevron-down lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_W8eCU ">
+</i>
+</div>
+</button>
+</div>
+<div  id="Flex_nTnZV3-gk" style="transform: translate(0px, 0px)" class="lay_AEgkh1 pos_alsPv2 mapa_CrkEb2 vis_aqVpO4 ">
+
+
+</div>
+
+
+</div>
+</div>
+<div  id="Flex_oR3RM4-gk" class="lay_VJgdf2 pos_McpnX1 mapa_CrkEb2 vis_qF4SC ">
+<div  id="Flex_Q4jU73-gk" class="lay_x4rOR3 pos_Ch7rg3 mapa_CrkEb2 vis_EQXTI4 ">
+<div  id="Flex_Qv9hD3-gk" class="lay_H7iHV3 pos_McpnX1 mapa_Fls5t vis_EQXTI4 ">
+<code  id="Code_zKgWZ-gk">
+<div  id="Flex_GNyOp1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_WWSFE-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">1</p>
+<div  id="Flex_fXDdk3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_zjdw63-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_r8XSQ ">// examples/WithIcons.zig</p>
+</div>
+</div>
+<div  id="Flex_5kdWx-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_rLifc-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">2</p>
+<div  id="Flex_5MRLe2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_p1s023-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_b0Rfd2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Vapor = @import(</p>
+<p  id="Text_1wTbf3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"vapor"</p>
+<p  id="Text_uLy304-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">);</p>
+</div>
+</div>
+<div  id="Flex_gd0cU4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_WGOSC4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">3</p>
+<div  id="Flex_pAExo2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_MwwxJ4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_xd7iL4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Opaque = @import(</p>
+<p  id="Text_kYGlf-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"../../../../components/Opaque.zig"</p>
+<p  id="Text_ziGGz2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">);</p>
+</div>
+</div>
+<div  id="Flex_Fq4hF4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_fPGB01-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">4</p>
+<div  id="Flex_O1W3X3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_rSmFj-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_bRDnF-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Select = Opaque.Select;</p>
+</div>
+</div>
+<div  id="Flex_a2yK5-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_gZEwH1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">5</p>
+<div  id="Flex_YUn2L-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_ZHBPR1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_laSnn1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">6</p>
+<div  id="Flex_MKiIs1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_RTIOK1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_Onal62-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> ScienceTools = </p>
+<p  id="Text_plfD6-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">enum</p>
+<p  id="Text_A5ITs1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> {</p>
+</div>
+</div>
+<div  id="Flex_gWz4M3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_mTXPo-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">7</p>
+<div  id="Flex_AXj324-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_BVPQB2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    microscope,</p>
+</div>
+</div>
+<div  id="Flex_gEd3M2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_a67dq3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">8</p>
+<div  id="Flex_MCZvE-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_qzn7W3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    fire,</p>
+</div>
+</div>
+<div  id="Flex_qDWP13-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_G8jk73-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">9</p>
+<div  id="Flex_U60VX3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_zg4vV4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    screwdriver,</p>
+</div>
+</div>
+<div  id="Flex_Ti8KW1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_wcO5Y1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">10</p>
+<div  id="Flex_P1bGF1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_ALQzY3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    toolbox,</p>
+</div>
+</div>
+<div  id="Flex_K9K2l1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_puoub2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">11</p>
+<div  id="Flex_Ydcho2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_Kq4xi-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">};</p>
+</div>
+</div>
+<div  id="Flex_ivxAN3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_15foP2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">12</p>
+<div  id="Flex_ZgMxg1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_lJc9W1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_pjpPC2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">13</p>
+<div  id="Flex_L0LlU-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_uOtyS4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">var</p>
+<p  id="Text_UD9Pi2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> select: </p>
+<p  id="Text_nR2aO-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Select</p>
+<p  id="Text_yQeBP4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(ScienceTools) = undefined;</p>
+</div>
+</div>
+<div  id="Flex_creVd4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_fafDI-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">14</p>
+<div  id="Flex_wRboZ2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_YXhzC3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_Bb4LO2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">15</p>
+<div  id="Flex_Re2uQ1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_PZKHh-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">pub</p>
+<p  id="Text_n70Tn3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_dnm7e2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">fn</p>
+<p  id="Text_bVcyS1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_36Cql2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">init</p>
+<p  id="Text_zC2lT-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">() void {</p>
+</div>
+</div>
+<div  id="Flex_KaguZ2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_HY9Kn1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">16</p>
+<div  id="Flex_siCPg2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_bXPzc-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    select = .</p>
+<p  id="Text_qLTc93-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">fromItems</p>
+<p  id="Text_oqSck2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(&.{</p>
+</div>
+</div>
+<div  id="Flex_kx4NC1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_N70FA4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">17</p>
+<div  id="Flex_Gtez51-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_ZGZkx2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .{ .value = ScienceTools.microscope, .label = </p>
+<p  id="Text_a8LjV-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Microscope"</p>
+<p  id="Text_WpZ1t2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .icon = .microscope },</p>
+</div>
+</div>
+<div  id="Flex_vXPaJ2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_xKqxe4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">18</p>
+<div  id="Flex_NSeRN1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_rTP5m2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .{ .value = ScienceTools.fire, .label = </p>
+<p  id="Text_YretU1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Fire"</p>
+<p  id="Text_urEj73-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .icon = .fire },</p>
+</div>
+</div>
+<div  id="Flex_pntxF3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_7G1R12-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">19</p>
+<div  id="Flex_5Zd9E4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_QkMcR2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .{ .value = ScienceTools.screwdriver, .label = </p>
+<p  id="Text_tbKsF2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Screwdriver"</p>
+<p  id="Text_SNQbS4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .icon = .screw_driver },</p>
+</div>
+</div>
+<div  id="Flex_lxyQw3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_FsvB63-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">20</p>
+<div  id="Flex_TjHyh-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_MSG68-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .{ .value = ScienceTools.toolbox, .label = </p>
+<p  id="Text_XqaAS1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Toolbox"</p>
+<p  id="Text_AZANF1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .icon = .toolbox },</p>
+</div>
+</div>
+<div  id="Flex_eX21b3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_APVOa1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">21</p>
+<div  id="Flex_NtnJP1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_X45FV2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    });</p>
+</div>
+</div>
+<div  id="Flex_IreAE4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_k58wn3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">22</p>
+<div  id="Flex_4T6Rf2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_nRK184-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    select.trigger = </p>
+<p  id="Text_OXSDX3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Science Tools"</p>
+<p  id="Text_wC7uM-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">;</p>
+</div>
+</div>
+<div  id="Flex_WyZbW3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_0GnhN4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">23</p>
+<div  id="Flex_Zn7YL3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_M1zCj2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">}</p>
+</div>
+</div>
+<div  id="Flex_Q1S5K1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_YUEtw2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">24</p>
+<div  id="Flex_2g3IS4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_NHkwY2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_jmYj12-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">25</p>
+<div  id="Flex_GT35L1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_48Vv44-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">pub</p>
+<p  id="Text_ZiuCa1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_eIh06-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">fn</p>
+<p  id="Text_NqchP1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_najkE2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">render</p>
+<p  id="Text_RD3n04-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">() void {</p>
+</div>
+</div>
+<div  id="Flex_fLoEY3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_N9AmZ-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">26</p>
+<div  id="Flex_D92TA4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_d8kux1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    select.</p>
+<p  id="Text_uQUL-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">render</p>
+<p  id="Text_UIDVU4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">();</p>
+</div>
+</div>
+<div  id="Flex_WbSfO-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_mA3BP-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">27</p>
+<div  id="Flex_0Q4Qj3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_d1otg-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">}</p>
+</div>
+</div>
+<div  id="Flex_s2H2S2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_4ylH31-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">28</p>
+<div  id="Flex_4Bfzz3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+</code>
+</div>
+</div>
+</div>
+<p  id="Text_3sPHm2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_9SPU2 vis_A8fUz1 ">Grouped</p>
+<p  id="Text_tw50p2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_0Ngye4 vis_CRb9I2 ">Organize items into labeled groups using .init() with Group structs.</p>
+<div  id="Flex_JV9qW3-gk" class="lay_evRjJ2 pos_McpnX1 mapa_3RP2h2 vis_d2yZ01 ">
+<div  id="Flex_K2Ugr3-gk" class="lay_LVrlx pos_Ch7rg3 mapa_CrkEb2 vis_aqVpO4 ">
+<div  id="Flex_SBfr41-gk" class="lay_tupWc4 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<button  id="CtxB_WuEJg-gk" class="lay_CQSaD pos_McpnX1 mapa_rPfvm1 vis_nhPHj3 intr_bzfvQ4 " aria-label="Select Dropdown">
+<div  id="Flex_9SYBj-gk" class="lay_1wHVY1 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<p  id="Text_oZRs03-gk" class="lay_1I8dE4 pos_McpnX1 mapa_RM5YV3 vis_3SOxb4 ">Select Timezone</p>
+<i  id="Flex_Bhq523-gk" class="bi bi-chevron-down lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_W8eCU ">
+</i>
+</div>
+</button>
+</div>
+<div  id="Flex_OY2cG-gk" style="transform: translate(0px, 0px)" class="lay_AEgkh1 pos_alsPv2 mapa_CrkEb2 vis_aqVpO4 ">
+
+
+</div>
+
+
+</div>
+</div>
+<div  id="Flex_14P563-gk" class="lay_VJgdf2 pos_McpnX1 mapa_CrkEb2 vis_qF4SC ">
+<div  id="Flex_xdos84-gk" class="lay_x4rOR3 pos_Ch7rg3 mapa_CrkEb2 vis_EQXTI4 ">
+<div  id="Flex_xPZE02-gk" class="lay_H7iHV3 pos_McpnX1 mapa_Fls5t vis_EQXTI4 ">
+<code  id="Code_iLpWK1-gk">
+<div  id="Flex_e78fm1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_Wyp9E4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">1</p>
+<div  id="Flex_Gjjhq-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_7eUxD1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_r8XSQ ">// examples/Grouped.zig</p>
+</div>
+</div>
+<div  id="Flex_Fgzbc3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_vTiQZ-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">2</p>
+<div  id="Flex_1WEZa-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_UbNhO-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_wcEy92-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Vapor = @import(</p>
+<p  id="Text_PLvUV4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"vapor"</p>
+<p  id="Text_hRJmN2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">);</p>
+</div>
+</div>
+<div  id="Flex_FC0Zc2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_13etl2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">3</p>
+<div  id="Flex_jtR8b4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_10z8E4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_yNl4i2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Opaque = @import(</p>
+<p  id="Text_odzGE3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"../../../../components/Opaque.zig"</p>
+<p  id="Text_ttenL1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">);</p>
+</div>
+</div>
+<div  id="Flex_PEAZN4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_Au6h04-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">4</p>
+<div  id="Flex_eLbqo3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_M0O6V-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_Z4HvQ1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Select = Opaque.Select;</p>
+</div>
+</div>
+<div  id="Flex_2vJBG3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_yqhFu3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">5</p>
+<div  id="Flex_gg9ta-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_6XUVH1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_jQ1iw1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">6</p>
+<div  id="Flex_7icjo-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_kqwhM-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_bgC7X2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> TimeZone = </p>
+<p  id="Text_l00Yc3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">enum</p>
+<p  id="Text_l5KuH3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> {</p>
+</div>
+</div>
+<div  id="Flex_RAIUS3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_4UMEN-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">7</p>
+<div  id="Flex_DK0ax3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_HR0gX3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    </p>
+<p  id="Text_0RycA2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_r8XSQ ">// North America</p>
+</div>
+</div>
+<div  id="Flex_74ySM1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_KXGAx3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">8</p>
+<div  id="Flex_3LSTS-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_TKSKY1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    est, cst, mst, pst, akst, hst,</p>
+</div>
+</div>
+<div  id="Flex_Swgpa2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_YByE11-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">9</p>
+<div  id="Flex_1bCvw2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_aBMAw1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    </p>
+<p  id="Text_bPvMv-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_r8XSQ ">// Europe & Africa</p>
+</div>
+</div>
+<div  id="Flex_ZbwLf3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_4PzWX-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">10</p>
+<div  id="Flex_fh1lA3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_sbTDZ4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    gmt, cet, eet, west, cat, eat,</p>
+</div>
+</div>
+<div  id="Flex_yBhpX2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_9AgST3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">11</p>
+<div  id="Flex_5EHen-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_G4bRB2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    </p>
+<p  id="Text_0u92y3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_r8XSQ ">// Asia</p>
+</div>
+</div>
+<div  id="Flex_uCXY63-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_XIqKW1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">12</p>
+<div  id="Flex_82UUK1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_GlRLQ2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    msk, ist, cst_china, jst, kst, wita,</p>
+</div>
+</div>
+<div  id="Flex_E9lD02-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_vL58L1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">13</p>
+<div  id="Flex_1Vued4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_I2cyt1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    </p>
+<p  id="Text_F27dI1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_r8XSQ ">// Australia & Pacific</p>
+</div>
+</div>
+<div  id="Flex_tdGWn3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_DDj5p1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">14</p>
+<div  id="Flex_YC39U3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_zAnot1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    awst, acst, aest, nzst, fjt,</p>
+</div>
+</div>
+<div  id="Flex_KZRFD-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_7q0bk2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">15</p>
+<div  id="Flex_lPQ4p1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_QscPK2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    </p>
+<p  id="Text_EI6fT2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_r8XSQ ">// South America</p>
+</div>
+</div>
+<div  id="Flex_xjZzC3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_Jb4CD4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">16</p>
+<div  id="Flex_OQPBy1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_jCYYV2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    art, bot, brt, clt,</p>
+</div>
+</div>
+<div  id="Flex_qD6j01-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_5xboh1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">17</p>
+<div  id="Flex_LTXeU1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_4jrIw3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    </p>
+<p  id="Text_zsmDm1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_r8XSQ ">// Universal</p>
+</div>
+</div>
+<div  id="Flex_j8HkN4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_kyRVY4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">18</p>
+<div  id="Flex_vQuQf3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_u8633-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    utc,</p>
+</div>
+</div>
+<div  id="Flex_ChwvN3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_if7GZ3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">19</p>
+<div  id="Flex_hKVhX-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_p6UCQ1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">};</p>
+</div>
+</div>
+<div  id="Flex_4hNJR2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_9yoJw-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">20</p>
+<div  id="Flex_5ialV3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_uiVRK2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_wNvTU3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">21</p>
+<div  id="Flex_DxHg53-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_7PwBo2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">var</p>
+<p  id="Text_atRe71-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> select: </p>
+<p  id="Text_StGrq-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Select</p>
+<p  id="Text_FBPHM3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(TimeZone) = undefined;</p>
+</div>
+</div>
+<div  id="Flex_lJgzN2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_wAAdf1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">22</p>
+<div  id="Flex_0PWBk1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_zF74n-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_oRaRI3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">23</p>
+<div  id="Flex_kQTol1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_HfpQD-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">pub</p>
+<p  id="Text_n4EVT4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_93jok3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">fn</p>
+<p  id="Text_N5GzG4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_x4Ncm2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">init</p>
+<p  id="Text_ggytv2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">() void {</p>
+</div>
+</div>
+<div  id="Flex_B0byy-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_6g63O1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">24</p>
+<div  id="Flex_JjgRT2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_bOiaH4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    select = .</p>
+<p  id="Text_7Cwsm1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">init</p>
+<p  id="Text_zuFcx2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_JuPbj3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Select Timezone"</p>
+<p  id="Text_IMbs8-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, &.{</p>
+</div>
+</div>
+<div  id="Flex_2ZaOA1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_O9iMf4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">25</p>
+<div  id="Flex_qWBoi1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_JXDOo-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        </p>
+<p  id="Text_jrh2o1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Select</p>
+<p  id="Text_C12q14-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(TimeZone).Group{ .title = </p>
+<p  id="Text_u8EuF3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"North America"</p>
+<p  id="Text_wVhKa2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .items = &.{</p>
+</div>
+</div>
+<div  id="Flex_MSuFB1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_Tb2Hy1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">26</p>
+<div  id="Flex_6Z72e-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_a3RvU1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.est, .label = </p>
+<p  id="Text_uFjus3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Eastern Standard Time (EST)"</p>
+<p  id="Text_S4Fdb1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_yw98A3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_8M7LR1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">27</p>
+<div  id="Flex_zeE041-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_ChYSc4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.cst, .label = </p>
+<p  id="Text_iikqL-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Central Standard Time (CST)"</p>
+<p  id="Text_ChOuJ-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_3uH1A1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_1BSnQ-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">28</p>
+<div  id="Flex_ej52p2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_04JYH3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.mst, .label = </p>
+<p  id="Text_zQBKP2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Mountain Standard Time (MST)"</p>
+<p  id="Text_iWNEB-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_e2CRR-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_VkIbb4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">29</p>
+<div  id="Flex_YWyxe4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_R9V4w2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.pst, .label = </p>
+<p  id="Text_OKUmc1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Pacific Standard Time (PST)"</p>
+<p  id="Text_DRpjL-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_kv6tX-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_fBUVB2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">30</p>
+<div  id="Flex_NsoLl3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_EzyJy3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.akst, .label = </p>
+<p  id="Text_UZVk72-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Alaska Standard Time (AKST)"</p>
+<p  id="Text_8giA33-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_anM6B1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_9ybv81-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">31</p>
+<div  id="Flex_3D6c93-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_qh7YK3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.hst, .label = </p>
+<p  id="Text_Iac5d2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Hawaii Standard Time (HST)"</p>
+<p  id="Text_COQYy1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_6P0p8-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_MvWrm2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">32</p>
+<div  id="Flex_r9tbV3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_lGswB-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        } },</p>
+</div>
+</div>
+<div  id="Flex_95HX94-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_SKSfZ4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">33</p>
+<div  id="Flex_ZIaI52-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_57VLP-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        </p>
+<p  id="Text_D0zI04-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Select</p>
+<p  id="Text_iGC4U1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(TimeZone).Group{ .title = </p>
+<p  id="Text_SLbQf3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Europe & Africa"</p>
+<p  id="Text_tw2KG-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .items = &.{</p>
+</div>
+</div>
+<div  id="Flex_KZWy2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_yosXR-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">34</p>
+<div  id="Flex_WRtYW2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_5R38u3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.gmt, .label = </p>
+<p  id="Text_vwvqg-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Greenwich Mean Time (GMT)"</p>
+<p  id="Text_cIr5K4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_QQg7m3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_XKMdT2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">35</p>
+<div  id="Flex_gwQUE2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_vIFY71-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.cet, .label = </p>
+<p  id="Text_1TkEY3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Central European Time (CET)"</p>
+<p  id="Text_9Wr0m2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_FFkJ52-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_8Wn2K2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">36</p>
+<div  id="Flex_Vu6vd4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_UeJVb1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.eet, .label = </p>
+<p  id="Text_RTpjV-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Eastern European Time (EET)"</p>
+<p  id="Text_fji5S4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_cTISV4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_J4eTe2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">37</p>
+<div  id="Flex_ZQbem1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_KQm081-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.west, .label = </p>
+<p  id="Text_xd1uB2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Western European Summer Time (WEST)"</p>
+<p  id="Text_MiTq53-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_hVHAY2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_kKOWn-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">38</p>
+<div  id="Flex_1dDY7-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_wDwL53-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.cat, .label = </p>
+<p  id="Text_Plk362-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Central Africa Time (CAT)"</p>
+<p  id="Text_fElH83-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_wBNUd4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_RytyI2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">39</p>
+<div  id="Flex_i0sva3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_ei0Y7-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.eat, .label = </p>
+<p  id="Text_mZguD1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"East Africa Time (EAT)"</p>
+<p  id="Text_g7VZc-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_CnIp44-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_2ytpm-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">40</p>
+<div  id="Flex_6ZNb3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_tYVv62-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        } },</p>
+</div>
+</div>
+<div  id="Flex_k6bp53-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_MV5R12-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">41</p>
+<div  id="Flex_jrOvd-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_ZHIyA4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        </p>
+<p  id="Text_OHWSf2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Select</p>
+<p  id="Text_g1LQV1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(TimeZone).Group{ .title = </p>
+<p  id="Text_YssMx-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Asia"</p>
+<p  id="Text_MWPKZ-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .items = &.{</p>
+</div>
+</div>
+<div  id="Flex_gh1sp-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_RiirD1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">42</p>
+<div  id="Flex_HOacC4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_I5Fbx1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.msk, .label = </p>
+<p  id="Text_zE4DD2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Moscow Time (MSK)"</p>
+<p  id="Text_eTytF-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_TdS7y2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_5S1wc-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">43</p>
+<div  id="Flex_tNTfZ-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_XMizQ2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.ist, .label = </p>
+<p  id="Text_NOBQE2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"India Standard Time (IST)"</p>
+<p  id="Text_LUm5S3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_pUns12-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_Cz1ht-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">44</p>
+<div  id="Flex_3wHUU-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_P6f1q2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.cst_china, .label = </p>
+<p  id="Text_WruHh1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"China Standard Time (CST)"</p>
+<p  id="Text_7axxV-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_4rdd91-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_04Il81-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">45</p>
+<div  id="Flex_XbBp91-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_DsAIJ4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.jst, .label = </p>
+<p  id="Text_eXEVk-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Japan Standard Time (JST)"</p>
+<p  id="Text_OknGZ-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_548iN2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_h7hSu1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">46</p>
+<div  id="Flex_TD6uN2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_sWFLh2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.kst, .label = </p>
+<p  id="Text_jLIRB3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Korea Standard Time (KST)"</p>
+<p  id="Text_inYbG1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_WXFjG1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_bYQaV4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">47</p>
+<div  id="Flex_nW5sW2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_99G5i1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.wita, .label = </p>
+<p  id="Text_S1tjU-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Indonesia Central Standard Time (WITA)"</p>
+<p  id="Text_o7gEZ4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_CGs7b3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_w1Iyi2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">48</p>
+<div  id="Flex_OdExY1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_Em6gd4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        } },</p>
+</div>
+</div>
+<div  id="Flex_YP3MR2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_CU3I31-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">49</p>
+<div  id="Flex_U4sZF1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_tLc4h1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        </p>
+<p  id="Text_Paw8M-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Select</p>
+<p  id="Text_nHy48-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(TimeZone).Group{ .title = </p>
+<p  id="Text_hUQ5y-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Australia & Pacific"</p>
+<p  id="Text_z0zlu-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .items = &.{</p>
+</div>
+</div>
+<div  id="Flex_vFSP22-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_Xjtej1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">50</p>
+<div  id="Flex_rzdgc-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_XjfVC-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.awst, .label = </p>
+<p  id="Text_bVgFl1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Australian Western Standard Time (AWST)"</p>
+<p  id="Text_PDLmV1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_42I9p2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_AOyy91-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">51</p>
+<div  id="Flex_nOe2B2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_varM8-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.acst, .label = </p>
+<p  id="Text_lcS293-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Australian Central Standard Time (ACST)"</p>
+<p  id="Text_XVnjg2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_tRg2A4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_jYqGS4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">52</p>
+<div  id="Flex_fm2jb4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_SFSLU4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.aest, .label = </p>
+<p  id="Text_ojo2O3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Australian Eastern Standard Time (AEST)"</p>
+<p  id="Text_auVOE3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_l2ecK2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_vFYq93-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">53</p>
+<div  id="Flex_SAqQ11-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_lkYN3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.nzst, .label = </p>
+<p  id="Text_IKFV2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"New Zealand Standard Time (NZST)"</p>
+<p  id="Text_GgoH7-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_et9sH3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_xRQzN3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">54</p>
+<div  id="Flex_ZX9sY4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_NeLca4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.fjt, .label = </p>
+<p  id="Text_TCsR54-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Fiji Time (FJT)"</p>
+<p  id="Text_VQUWf4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_YzSbH4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_rrljS1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">55</p>
+<div  id="Flex_BweCQ4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_G5T5d1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        } },</p>
+</div>
+</div>
+<div  id="Flex_Mkl3Z2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_TXBl02-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">56</p>
+<div  id="Flex_qs9sN3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_J8NSJ4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        </p>
+<p  id="Text_60P944-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Select</p>
+<p  id="Text_4VudL1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(TimeZone).Group{ .title = </p>
+<p  id="Text_iG9A3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"South America"</p>
+<p  id="Text_HKxq61-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .items = &.{</p>
+</div>
+</div>
+<div  id="Flex_Xgt9R1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_dJYku-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">57</p>
+<div  id="Flex_tojm91-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_5TqC52-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.art, .label = </p>
+<p  id="Text_qHRBN-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Argentina Time (ART)"</p>
+<p  id="Text_xMSoi-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_jgmao3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_oLkdE2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">58</p>
+<div  id="Flex_HfcUW-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_VjFPC3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.bot, .label = </p>
+<p  id="Text_0iZtp3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Bolivia Time (BOT)"</p>
+<p  id="Text_aaoGk-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_HWVPb4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_06hrw2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">59</p>
+<div  id="Flex_ztOsK3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_Xak7e3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.brt, .label = </p>
+<p  id="Text_vWfWQ-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Brasilia Time (BRT)"</p>
+<p  id="Text_22qnr3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_s9Ojf2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_ceuhX3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">60</p>
+<div  id="Flex_sUckZ3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_CperK2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .{ .value = TimeZone.clt, .label = </p>
+<p  id="Text_sEGHr-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Chile Standard Time (CLT)"</p>
+<p  id="Text_VnAhe-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_BSASS4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_9jN7D-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">61</p>
+<div  id="Flex_5L2vR-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_oF9xg-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        } },</p>
+</div>
+</div>
+<div  id="Flex_cEYXx2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_Xl6AF3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">62</p>
+<div  id="Flex_86B521-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_5rkQH3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    });</p>
+</div>
+</div>
+<div  id="Flex_ZVL2s1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_BkAiH3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">63</p>
+<div  id="Flex_GPCvy-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_HjHPP4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">}</p>
+</div>
+</div>
+<div  id="Flex_J7onp1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_7V9wc1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">64</p>
+<div  id="Flex_Qr5IZ4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_R7iiX-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_tVYgG-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">65</p>
+<div  id="Flex_vPTm64-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_XQ2ah1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">pub</p>
+<p  id="Text_FcM9k1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_8bPp34-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">fn</p>
+<p  id="Text_SImUU2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_9qZRy1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">render</p>
+<p  id="Text_YmODW-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">() void {</p>
+</div>
+</div>
+<div  id="Flex_B4TwT3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_DOqbT-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">66</p>
+<div  id="Flex_d85id3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_FaEPa3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    select.</p>
+<p  id="Text_NUonu3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">render</p>
+<p  id="Text_KYpEz1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">();</p>
+</div>
+</div>
+<div  id="Flex_ImeP72-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_5lhxR1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">67</p>
+<div  id="Flex_32AqB2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_aH4M64-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">}</p>
+</div>
+</div>
+<div  id="Flex_oBAZT-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_0EewK1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">68</p>
+<div  id="Flex_poRfW1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+</code>
+</div>
+</div>
+</div>
+<p  id="Text_wab0F4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_9SPU2 vis_A8fUz1 ">Custom Trigger</p>
+<p  id="Text_Ka7u23-gk" class="lay_1I8dE4 pos_McpnX1 mapa_0Ngye4 vis_CRb9I2 ">Replace the default trigger button with a custom component.</p>
+<div  id="Flex_CP4Jg2-gk" class="lay_evRjJ2 pos_McpnX1 mapa_3RP2h2 vis_d2yZ01 ">
+<div  id="Flex_J6pP12-gk" class="lay_LVrlx pos_Ch7rg3 mapa_CrkEb2 vis_aqVpO4 ">
+<div  id="Flex_YhS9r1-gk" class="lay_tupWc4 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<button  id="CtxB_CjpcO-gk" class="lay_kSFpR4 pos_McpnX1 mapa_CrkEb2 vis_CGJNE3 " aria-label="Select Dropdown">
+<div  id="Flex_vQkeZ-gk" class="lay_2TkWG4 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<div  id="Flex_MDdvT4-gk" class="lay_k4GpJ pos_McpnX1 mapa_CrkEb2 vis_Bkf5e4 intr_REY4m ">
+<i  id="Flex_g6OcS4-gk" class="bi bi-three-dots lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aAZt52 ">
+</i>
+</div>
+</div>
+</button>
+</div>
+<div  id="Flex_Q91BV-gk" style="transform: translate(0px, 0px)" class="lay_AEgkh1 pos_alsPv2 mapa_CrkEb2 vis_aqVpO4 ">
+
+
+</div>
+
+
+</div>
+</div>
+<div  id="Flex_3FLs12-gk" class="lay_VJgdf2 pos_McpnX1 mapa_CrkEb2 vis_qF4SC ">
+<div  id="Flex_kTfOt2-gk" class="lay_x4rOR3 pos_Ch7rg3 mapa_CrkEb2 vis_EQXTI4 ">
+<div  id="Flex_N57A12-gk" class="lay_H7iHV3 pos_McpnX1 mapa_Fls5t vis_EQXTI4 ">
+<code  id="Code_TKEB44-gk">
+<div  id="Flex_a0Z7p1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_kt6iD3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">1</p>
+<div  id="Flex_vwQ1j1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_p0EOt-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_r8XSQ ">// examples/CustomTrigger.zig</p>
+</div>
+</div>
+<div  id="Flex_B8rjI-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_vQhOK1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">2</p>
+<div  id="Flex_6e93I-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_HXRhK1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_yfI494-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Vapor = @import(</p>
+<p  id="Text_49aBA4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"vapor"</p>
+<p  id="Text_cTqA51-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">);</p>
+</div>
+</div>
+<div  id="Flex_bQ4rs1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_eKyId2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">3</p>
+<div  id="Flex_EYKBj-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_505en3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_vPLoR1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Opaque = @import(</p>
+<p  id="Text_o4Dnf-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"../../../../components/Opaque.zig"</p>
+<p  id="Text_tycG91-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">);</p>
+</div>
+</div>
+<div  id="Flex_DNzG94-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_kEmQq1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">4</p>
+<div  id="Flex_D68id3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_mbPmD3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_q8RLH3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Select = Opaque.Select;</p>
+</div>
+</div>
+<div  id="Flex_sQX6D4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_sgkmk3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">5</p>
+<div  id="Flex_BHmik2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_ev3dU-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_WMIXs-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Box = Vapor.Box;</p>
+</div>
+</div>
+<div  id="Flex_TmTss-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_Pay2A3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">6</p>
+<div  id="Flex_KKPy34-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_J0L2H1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_HIPlP3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">7</p>
+<div  id="Flex_UyxfJ1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_2x6fH4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">var</p>
+<p  id="Text_v2sP3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> select: </p>
+<p  id="Text_egC4H1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Select</p>
+<p  id="Text_VKgAs3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(usize) = undefined;</p>
+</div>
+</div>
+<div  id="Flex_1Z17x1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_muiQG-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">8</p>
+<div  id="Flex_E3fRZ3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_cWejn3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_DcwGP4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">9</p>
+<div  id="Flex_lyMEb2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_dCgd31-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">pub</p>
+<p  id="Text_hGMcX3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_kGWP93-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">fn</p>
+<p  id="Text_YDo8Q4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_0pXiU2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">init</p>
+<p  id="Text_JuyyY1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">() void {</p>
+</div>
+</div>
+<div  id="Flex_qAPBN3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_Bry9N3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">10</p>
+<div  id="Flex_0DjOl3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_oURO-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    select = .</p>
+<p  id="Text_cP4Xe3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">fromItems</p>
+<p  id="Text_emTaM1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(&.{</p>
+</div>
+</div>
+<div  id="Flex_kxPDc2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_fbxzv3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">11</p>
+<div  id="Flex_wt0uM1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_aqejf3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .{ .value = </p>
+<p  id="Text_GoePr1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">0</p>
+<p  id="Text_EJoEc2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .label = </p>
+<p  id="Text_c6wAs-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Item 1"</p>
+<p  id="Text_i3b7W3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_gadti2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_sAKOF4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">12</p>
+<div  id="Flex_kM5iq1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_vFOWI2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .{ .value = </p>
+<p  id="Text_HWZaI-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">1</p>
+<p  id="Text_MWEnm1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .label = </p>
+<p  id="Text_FE3Re3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Item 2"</p>
+<p  id="Text_3ir3b1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_ZAHvK2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_JPjoH-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">13</p>
+<div  id="Flex_JLpJT3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_oq7iV2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .{ .value = </p>
+<p  id="Text_lH2d91-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">2</p>
+<p  id="Text_bxusQ1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .label = </p>
+<p  id="Text_gisMV1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Item 3"</p>
+<p  id="Text_jUEdu1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_edQmS-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_s4q6p2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">14</p>
+<div  id="Flex_RHBfM-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_bhQvZ4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .{ .value = </p>
+<p  id="Text_jayYb-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">3</p>
+<p  id="Text_75dHP4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .label = </p>
+<p  id="Text_qb2991-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Item 4"</p>
+<p  id="Text_hWOrQ3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_gOcL43-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_OfcWr-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">15</p>
+<div  id="Flex_jRsx72-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_HxcwI2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .{ .value = </p>
+<p  id="Text_ZUA3s-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">4</p>
+<p  id="Text_eQU8r1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .label = </p>
+<p  id="Text_zfTb43-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Item 5"</p>
+<p  id="Text_mQ6Gi3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_EcwHi1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_oGQV82-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">16</p>
+<div  id="Flex_7SlRp-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_Unxx42-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    });</p>
+</div>
+</div>
+<div  id="Flex_ecgt24-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_xcxlC-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">17</p>
+<div  id="Flex_Wb7YQ1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_j5FeW-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    select.trigger_component = triggerButton;</p>
+</div>
+</div>
+<div  id="Flex_k3vS01-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_fHCvk2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">18</p>
+<div  id="Flex_On4Md1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_8Nmbi3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    select.on_select = handleSelect;</p>
+</div>
+</div>
+<div  id="Flex_T5Xvh3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_2OMiG-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">19</p>
+<div  id="Flex_gcRTw-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_HX0sL3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">}</p>
+</div>
+</div>
+<div  id="Flex_vEhFW2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_UwDgx-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">20</p>
+<div  id="Flex_tXw0v3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_uIFQQ2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_TspMS-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">21</p>
+<div  id="Flex_1csy7-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_Vwu9y-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">fn</p>
+<p  id="Text_rjM1X-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_oRzfV1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">handleSelect</p>
+<p  id="Text_9B0WO3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(_: *</p>
+<p  id="Text_SCxIV3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Select</p>
+<p  id="Text_ephDx3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(usize), item: *</p>
+<p  id="Text_djAGo2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Select</p>
+<p  id="Text_bkLsj1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(usize).Item) void {</p>
+</div>
+</div>
+<div  id="Flex_yUAbb1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_xNepr1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">22</p>
+<div  id="Flex_FhznJ4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_KUf5-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    Vapor.</p>
+<p  id="Text_I34VO4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">alert</p>
+<p  id="Text_9ThdS2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_mQ6oT1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Selected: {s}"</p>
+<p  id="Text_FQLog-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .{item.label});</p>
+</div>
+</div>
+<div  id="Flex_QyADc2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_krq291-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">23</p>
+<div  id="Flex_qCkVJ-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_sCPVC1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">}</p>
+</div>
+</div>
+<div  id="Flex_s7JhQ-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_n4X7q2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">24</p>
+<div  id="Flex_H0znI-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_C0R2J-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_DHYtw2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">25</p>
+<div  id="Flex_lM2is2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_DfgFI2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">fn</p>
+<p  id="Text_C48lx1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_U3gSD1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">triggerButton</p>
+<p  id="Text_N3iX24-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(_: *</p>
+<p  id="Text_h0jBW2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Select</p>
+<p  id="Text_HbXLA1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(usize)) void {</p>
+</div>
+</div>
+<div  id="Flex_OJkGw3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_uKO392-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">26</p>
+<div  id="Flex_jtYYP-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_vNza61-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    </p>
+<p  id="Text_qVftk2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Box</p>
+<p  id="Text_yapg93-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">()</p>
+</div>
+</div>
+<div  id="Flex_0Le5j2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_Hr0FH2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">27</p>
+<div  id="Flex_2PG7o1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_CFG783-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_2rhef1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">width</p>
+<p  id="Text_CvvNn1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.</p>
+<p  id="Text_gXIJG2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">px</p>
+<p  id="Text_WmIdC4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_B3FE63-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">24</p>
+<p  id="Text_tC9Xy1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">))</p>
+</div>
+</div>
+<div  id="Flex_CdE0a2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_P7aM03-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">28</p>
+<div  id="Flex_gNB541-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_3SogZ3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_O5OZw-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">height</p>
+<p  id="Text_wsAA1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.</p>
+<p  id="Text_7N2Xp2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">px</p>
+<p  id="Text_n7q951-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_yLsYW1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">24</p>
+<p  id="Text_5wsYS4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">))</p>
+</div>
+</div>
+<div  id="Flex_cJ3GG-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_lQddh-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">29</p>
+<div  id="Flex_Y3WCv3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_9xsSP-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_l0PYj2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">cursor</p>
+<p  id="Text_leDbq-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.pointer)</p>
+</div>
+</div>
+<div  id="Flex_kTCp22-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_REtRI1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">30</p>
+<div  id="Flex_e0MVl1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_usjKd1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_L4MVu1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">background</p>
+<p  id="Text_zLIiD1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.</p>
+<p  id="Text_TVbhq1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">palette</p>
+<p  id="Text_4pAaB3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.background))</p>
+</div>
+</div>
+<div  id="Flex_58xLh2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_ozl7b2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">31</p>
+<div  id="Flex_0g6a63-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_OZijz2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_b3QVV2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">hover</p>
+<p  id="Text_9K1Mx-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.{</p>
+</div>
+</div>
+<div  id="Flex_djmwn3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_F0YGW3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">32</p>
+<div  id="Flex_1MZJs-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_z8KMZ3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .background = .</p>
+<p  id="Text_FXb393-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">palette</p>
+<p  id="Text_9RYFQ1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.tint),</p>
+</div>
+</div>
+<div  id="Flex_PNYBg2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_kUGug-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">33</p>
+<div  id="Flex_KhbWl3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_ar4Rb-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .text_color = .</p>
+<p  id="Text_k37HH2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">palette</p>
+<p  id="Text_dWeos1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.background),</p>
+</div>
+</div>
+<div  id="Flex_OG84c2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_VikCE1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">34</p>
+<div  id="Flex_g2VTU2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_sf7Ai-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        })</p>
+</div>
+</div>
+<div  id="Flex_WdQGY3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_Z4Ucy2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">35</p>
+<div  id="Flex_svfVK2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_9soPH-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_T1KNz-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">duration</p>
+<p  id="Text_M7Itx2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_f8SQh2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">200</p>
+<p  id="Text_it9mA3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">)</p>
+</div>
+</div>
+<div  id="Flex_rZLgH3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_npGnU4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">36</p>
+<div  id="Flex_8ETHU1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_zASLF3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_HzkQu2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">border</p>
+<p  id="Text_7KyMX4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.</p>
+<p  id="Text_BR1fD2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">round</p>
+<p  id="Text_PEToB1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.transparent, .</p>
+<p  id="Text_sWSvu-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">all</p>
+<p  id="Text_eAO891-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_pcuSU1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">4</p>
+<p  id="Text_rwl5I3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">)))</p>
+</div>
+</div>
+<div  id="Flex_KHY2w1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_oW30a-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">37</p>
+<div  id="Flex_G8R3k-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_ktAOJ2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_GjujV3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">layout</p>
+<p  id="Text_E6LgP2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.center)</p>
+</div>
+</div>
+<div  id="Flex_4z4822-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_2hQbU-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">38</p>
+<div  id="Flex_sMQpR4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_Omush-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_JopID-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">children</p>
+<p  id="Text_tf8oy3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">({</p>
+</div>
+</div>
+<div  id="Flex_kL9al-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_56p6J2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">39</p>
+<div  id="Flex_si0bL-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_PruSy3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        Vapor.</p>
+<p  id="Text_bbzH21-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Icon</p>
+<p  id="Text_sHL9t3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.three_dots)</p>
+</div>
+</div>
+<div  id="Flex_ZYnkB-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_anrsc3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">40</p>
+<div  id="Flex_66XLH3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_zkSEX-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .</p>
+<p  id="Text_BKL381-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">font</p>
+<p  id="Text_JSXT2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_HL00f3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">16</p>
+<p  id="Text_x4la91-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, </p>
+<p  id="Text_Hpjaz1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">300</p>
+<p  id="Text_tbF934-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, null)</p>
+</div>
+</div>
+<div  id="Flex_pexu82-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_N0nHo1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">41</p>
+<div  id="Flex_pYis81-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_gibGm3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .</p>
+<p  id="Text_J6Gnb-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">end</p>
+<p  id="Text_cZzzz1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">();</p>
+</div>
+</div>
+<div  id="Flex_AHSkp2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_hTkq24-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">42</p>
+<div  id="Flex_V8qr01-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_cVdSn-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    });</p>
+</div>
+</div>
+<div  id="Flex_Xu6Zc2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_zEfCb2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">43</p>
+<div  id="Flex_5jdMJ4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_Q2q971-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">}</p>
+</div>
+</div>
+<div  id="Flex_ITIdG3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_xQTUh2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">44</p>
+<div  id="Flex_tSev01-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_oXZQ51-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_JdgBj2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">45</p>
+<div  id="Flex_lS0wu3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_Ynmcr1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">pub</p>
+<p  id="Text_AK4p72-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_5yDQc1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">fn</p>
+<p  id="Text_g1g7l3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_YYog61-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">render</p>
+<p  id="Text_eO3Dn3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">() void {</p>
+</div>
+</div>
+<div  id="Flex_8VRTu2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_1IXhk-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">46</p>
+<div  id="Flex_yBCZu1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_WHdkF2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    select.</p>
+<p  id="Text_hqar-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">render</p>
+<p  id="Text_729492-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">();</p>
+</div>
+</div>
+<div  id="Flex_cyIll1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_DfiFt2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">47</p>
+<div  id="Flex_U2fsg2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_YKqEp2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">}</p>
+</div>
+</div>
+<div  id="Flex_BKSoJ-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_K3SGU3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">48</p>
+<div  id="Flex_Br0KJ-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+</code>
+</div>
+</div>
+</div>
+<p  id="Text_5rwpT1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_9SPU2 vis_A8fUz1 ">Detached</p>
+<p  id="Text_FMU0A4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_0Ngye4 vis_CRb9I2 ">Render the trigger and dropdown separately for custom layouts.</p>
+<div  id="Flex_Y5vuv3-gk" class="lay_evRjJ2 pos_McpnX1 mapa_3RP2h2 vis_d2yZ01 ">
+<div  id="Flex_0jSRM3-gk" class="lay_5QdGp2 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<div  id="Flex_ABWVv2-gk" class="lay_tupWc4 pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<button  id="CtxB_bsGuU3-gk" class="lay_kSFpR4 pos_McpnX1 mapa_CrkEb2 vis_CGJNE3 " aria-label="Select Dropdown">
+<div  id="Flex_zEODC3-gk" class="lay_zMpGD3 pos_McpnX1 mapa_hW4aM4 vis_1JqzW3 intr_xu3IH3 ">
+<p  id="Text_4sm701-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_DCIC14 ">Open Menu →</p>
+</div>
+</button>
+</div>
+</div>
+<div  id="Flex_XoyzB-gk" class="lay_MUzK12 pos_q7lZl2 mapa_CrkEb2 vis_aqVpO4 ">
+<div  id="Flex_qeOIQ3-gk" style="transform: translate(0px, 0px)" class="lay_AEgkh1 pos_alsPv2 mapa_CrkEb2 vis_aqVpO4 ">
+
+
+</div>
+
+
+</div>
+</div>
+<div  id="Flex_RPjtC4-gk" class="lay_VJgdf2 pos_McpnX1 mapa_CrkEb2 vis_qF4SC ">
+<div  id="Flex_UeqFg1-gk" class="lay_x4rOR3 pos_Ch7rg3 mapa_CrkEb2 vis_EQXTI4 ">
+<div  id="Flex_DUvsf1-gk" class="lay_H7iHV3 pos_McpnX1 mapa_Fls5t vis_EQXTI4 ">
+<code  id="Code_krHjE-gk">
+<div  id="Flex_BUm5W3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_WTqD61-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">1</p>
+<div  id="Flex_4LoSG2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_Ov1Gu3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_r8XSQ ">// examples/Detached.zig</p>
+</div>
+</div>
+<div  id="Flex_w6FAH4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_ufVTy-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">2</p>
+<div  id="Flex_LrxXq2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_kXhfJ3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_CktJW3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Vapor = @import(</p>
+<p  id="Text_xUtE2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"vapor"</p>
+<p  id="Text_ZUQf8-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">);</p>
+</div>
+</div>
+<div  id="Flex_XjEjb3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_f5uUL1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">3</p>
+<div  id="Flex_Gn7KT4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_JKBy8-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_c03862-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Opaque = @import(</p>
+<p  id="Text_oRk8j3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"../../../../components/Opaque.zig"</p>
+<p  id="Text_x9XF03-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">);</p>
+</div>
+</div>
+<div  id="Flex_OWe9D3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_4z9sw3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">4</p>
+<div  id="Flex_99YjN4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_2Q3kB1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_jZgVJ1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Select = Opaque.Select;</p>
+</div>
+</div>
+<div  id="Flex_LHpVT4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_aOXn71-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">5</p>
+<div  id="Flex_EwIU92-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_9PQ5l2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_qJVy5-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Box = Vapor.Box;</p>
+</div>
+</div>
+<div  id="Flex_sAm1E1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_cHNdV1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">6</p>
+<div  id="Flex_b0M7A3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_ajMXZ3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_lCgJf1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Text = Vapor.Text;</p>
+</div>
+</div>
+<div  id="Flex_86wxS4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_BQ4Fl-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">7</p>
+<div  id="Flex_SdDGO2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_IHk2p3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_roAAj3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> Stack = Vapor.Stack;</p>
+</div>
+</div>
+<div  id="Flex_dS6T43-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_95sX61-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">8</p>
+<div  id="Flex_fg4z63-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_1mERb3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_QR4iW4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">9</p>
+<div  id="Flex_H7wR61-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_nLhbG-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">const</p>
+<p  id="Text_BVMZh3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> NavItem = </p>
+<p  id="Text_zDCjb1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">enum</p>
+<p  id="Text_yC5zw3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> {</p>
+</div>
+</div>
+<div  id="Flex_8qB5p1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_gsVsd4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">10</p>
+<div  id="Flex_D8Jnt-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_QwTu42-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    dashboard,</p>
+</div>
+</div>
+<div  id="Flex_nuZuy-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_IfHzN1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">11</p>
+<div  id="Flex_JXTMd1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_hYyOG1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    transactions,</p>
+</div>
+</div>
+<div  id="Flex_uUUJV1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_7UpPU1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">12</p>
+<div  id="Flex_YEgkZ1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_tWKbG4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    analytics,</p>
+</div>
+</div>
+<div  id="Flex_TPf3L-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_33R631-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">13</p>
+<div  id="Flex_1spEd1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_ADlzH4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    customers,</p>
+</div>
+</div>
+<div  id="Flex_pwIv11-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_9z0u11-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">14</p>
+<div  id="Flex_nE5p03-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_CN9DM4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    settings,</p>
+</div>
+</div>
+<div  id="Flex_lUfX3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_gjgwo-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">15</p>
+<div  id="Flex_8zoiL1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_uk10A-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">};</p>
+</div>
+</div>
+<div  id="Flex_jcn1O2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_rHNTP1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">16</p>
+<div  id="Flex_8Lj6Q2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_vKyAd-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_ZkgZd-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">17</p>
+<div  id="Flex_jQNpy-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_JAo391-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">var</p>
+<p  id="Text_K837H4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> select: </p>
+<p  id="Text_eMwJ1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Select</p>
+<p  id="Text_46XCm-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(NavItem) = undefined;</p>
+</div>
+</div>
+<div  id="Flex_Iij763-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_XhM5s3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">18</p>
+<div  id="Flex_LaKnX-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_LFch51-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_9DgGz2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">19</p>
+<div  id="Flex_e0Kt14-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_2sohh2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">pub</p>
+<p  id="Text_DG5VQ2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_LaU7r2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">fn</p>
+<p  id="Text_IShXw2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_rD9EC2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">init</p>
+<p  id="Text_qyJTn1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">() void {</p>
+</div>
+</div>
+<div  id="Flex_mWmCd1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_uRwEE-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">20</p>
+<div  id="Flex_DQkaW3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_oNw0B-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    select = .</p>
+<p  id="Text_Cx6vq2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">fromItems</p>
+<p  id="Text_G5CHA2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(&.{</p>
+</div>
+</div>
+<div  id="Flex_t1WeR3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_BeBNI3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">21</p>
+<div  id="Flex_dVKlV2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_6XExB3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .{ .value = NavItem.dashboard, .label = </p>
+<p  id="Text_YD6Bp-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Dashboard"</p>
+<p  id="Text_jXmNG2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_xXhsl1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_VhxlN-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">22</p>
+<div  id="Flex_hNwZ02-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_0kSFz-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .{ .value = NavItem.transactions, .label = </p>
+<p  id="Text_oktg14-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Transactions"</p>
+<p  id="Text_vrj3K4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_0l9uB2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_ih9Wt2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">23</p>
+<div  id="Flex_wei1C2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_SxxHC3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .{ .value = NavItem.analytics, .label = </p>
+<p  id="Text_tS7fC-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Analytics"</p>
+<p  id="Text_XdxU41-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_gh5Ra1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_Qj0mT4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">24</p>
+<div  id="Flex_dDMjJ1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_lPj6R-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .{ .value = NavItem.customers, .label = </p>
+<p  id="Text_ixJlb3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Customers"</p>
+<p  id="Text_f58AO2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_mMGgH-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_ulcCL1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">25</p>
+<div  id="Flex_BtJT32-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_VaWIx2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .{ .value = NavItem.settings, .label = </p>
+<p  id="Text_FeATh2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Settings"</p>
+<p  id="Text_M3r9i2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> },</p>
+</div>
+</div>
+<div  id="Flex_D4SHC-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_2ZOkP4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">26</p>
+<div  id="Flex_pA3JX-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_6WLkC4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    });</p>
+</div>
+</div>
+<div  id="Flex_xlEnN2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_DDhUJ-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">27</p>
+<div  id="Flex_Cewyr3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_n6DyS-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    select.trigger_component = triggerButton;</p>
+</div>
+</div>
+<div  id="Flex_2GxM5-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_5lkmH-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">28</p>
+<div  id="Flex_xt2NN2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_SLtr9-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    select.on_select = handleSelect;</p>
+</div>
+</div>
+<div  id="Flex_riJhN3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_BjfoB4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">29</p>
+<div  id="Flex_4zRIQ2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_SzazW4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">}</p>
+</div>
+</div>
+<div  id="Flex_qnr8e3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_PGAmt3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">30</p>
+<div  id="Flex_M980m2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_4IL2L4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_5fdkL4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">31</p>
+<div  id="Flex_PHEp11-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_QJyVW-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">fn</p>
+<p  id="Text_twdsb1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_Bd2b24-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">handleSelect</p>
+<p  id="Text_F5LVn-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(_: *</p>
+<p  id="Text_LwQak-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Select</p>
+<p  id="Text_qYwSS-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(NavItem), item: *</p>
+<p  id="Text_61CJN2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Select</p>
+<p  id="Text_ZSylW4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(NavItem).Item) void {</p>
+</div>
+</div>
+<div  id="Flex_yst5K-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_pcP481-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">32</p>
+<div  id="Flex_xe97h1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_Bf8PM4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    Vapor.</p>
+<p  id="Text_epWMJ1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">alert</p>
+<p  id="Text_GZUA04-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_izA4f-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Selected: {s}"</p>
+<p  id="Text_SK1Mw1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .{item.label});</p>
+</div>
+</div>
+<div  id="Flex_qhY9k3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_QhWM4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">33</p>
+<div  id="Flex_sVU4Q3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_8i55m-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">}</p>
+</div>
+</div>
+<div  id="Flex_NvmGH4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_LJ6YZ1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">34</p>
+<div  id="Flex_SwSu13-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_Cr0by-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_Wus8G-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">35</p>
+<div  id="Flex_cZPGw2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_iPsFE4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">fn</p>
+<p  id="Text_tF31M2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_Hxsfz-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">triggerButton</p>
+<p  id="Text_7sIh02-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(_: *</p>
+<p  id="Text_jibjH1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Select</p>
+<p  id="Text_Hip283-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(NavItem)) void {</p>
+</div>
+</div>
+<div  id="Flex_FzEFC-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_La5GE-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">36</p>
+<div  id="Flex_gAPmY4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_Dv63A2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    </p>
+<p  id="Text_ySzLZ4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Box</p>
+<p  id="Text_5MicT4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">()</p>
+</div>
+</div>
+<div  id="Flex_tiZwe2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_GNxAY4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">37</p>
+<div  id="Flex_ZziRA4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_v9F53-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_8ktgD3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">padding</p>
+<p  id="Text_o4AXX1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.</p>
+<p  id="Text_gDlYU3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">tblr</p>
+<p  id="Text_sLjKI4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_UGUy6-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">8</p>
+<p  id="Text_tLi5H4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, </p>
+<p  id="Text_tv8cs3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">8</p>
+<p  id="Text_H9U7R-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, </p>
+<p  id="Text_cOAaT1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">10</p>
+<p  id="Text_xZspv-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, </p>
+<p  id="Text_VwaHY1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">10</p>
+<p  id="Text_WZJvm-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">))</p>
+</div>
+</div>
+<div  id="Flex_53reY-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_0K3qt2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">38</p>
+<div  id="Flex_jngzV3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_QivRi3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_8IujH-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">layout</p>
+<p  id="Text_q4IXT2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.x_between_center)</p>
+</div>
+</div>
+<div  id="Flex_N8Svf3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_US8qb2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">39</p>
+<div  id="Flex_5VXCU1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_FD2fa-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_zDwFh2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">spacing</p>
+<p  id="Text_kf9ML1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_3kZxS3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">8</p>
+<p  id="Text_vnCMP2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">)</p>
+</div>
+</div>
+<div  id="Flex_E2kkb2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_hx2PZ3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">40</p>
+<div  id="Flex_EeDnn-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_QZjfg1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_ExlI24-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">width</p>
+<p  id="Text_pfZrS1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.fit)</p>
+</div>
+</div>
+<div  id="Flex_FCHJD4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_nsnbq-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">41</p>
+<div  id="Flex_hqZIf1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_ha32j1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_D1uDM2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">height</p>
+<p  id="Text_YsaxP-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.fit)</p>
+</div>
+</div>
+<div  id="Flex_NVxNR3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_k2Bpb4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">42</p>
+<div  id="Flex_lXnpz3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_doi6Y2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_W7XtT3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">border</p>
+<p  id="Text_KwQmD3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.</p>
+<p  id="Text_SCxCA1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">round</p>
+<p  id="Text_9KbVn1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.</p>
+<p  id="Text_0PKvi-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">palette</p>
+<p  id="Text_Sc9mw3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.border_color_light), .</p>
+<p  id="Text_UZHUb3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">all</p>
+<p  id="Text_okpLe-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_HVIBc3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">12</p>
+<p  id="Text_3EXNP1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">)))</p>
+</div>
+</div>
+<div  id="Flex_F5kka4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_wquUb4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">43</p>
+<div  id="Flex_6VE621-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_MtHQt-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_q78w6-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">background</p>
+<p  id="Text_gyvfb1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.</p>
+<p  id="Text_rhakO2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">palette</p>
+<p  id="Text_WWiT43-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.tint))</p>
+</div>
+</div>
+<div  id="Flex_eczVA4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_vuOhH2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">44</p>
+<div  id="Flex_HCL381-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_3L7Y62-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_aoa5P3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">duration</p>
+<p  id="Text_0GXfr2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_vsSXJ-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">100</p>
+<p  id="Text_8PUeY3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">)</p>
+</div>
+</div>
+<div  id="Flex_iyyU4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_kXNj32-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">45</p>
+<div  id="Flex_omsv6-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_vMiss-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_bcOx81-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">newShadow</p>
+<p  id="Text_rdPZc2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(Vapor.Types.NewShadow.</p>
+<p  id="Text_FEQ2F4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">init</p>
+<p  id="Text_AmUCG1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">()</p>
+</div>
+</div>
+<div  id="Flex_651fM3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_TmJAj1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">46</p>
+<div  id="Flex_QuSwA2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_vewqL3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .</p>
+<p  id="Text_q3xwm2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">inset</p>
+<p  id="Text_UAF2K4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_3KlOR3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">0</p>
+<p  id="Text_jR0R64-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, -</p>
+<p  id="Text_PpktI-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">2</p>
+<p  id="Text_ODB0Y-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .</p>
+<p  id="Text_Me80y2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">transparentizeHex</p>
+<p  id="Text_4quNu2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.black, </p>
+<p  id="Text_4RkQs3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">0.3</p>
+<p  id="Text_BoLvM4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">))</p>
+</div>
+</div>
+<div  id="Flex_dfWpt3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_UsAnW-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">47</p>
+<div  id="Flex_lHPQz-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_QKYlr-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .</p>
+<p  id="Text_aIMKo-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">drop</p>
+<p  id="Text_4Mda74-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_EcotR2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">0</p>
+<p  id="Text_tb2N92-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, </p>
+<p  id="Text_oREcu1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">1</p>
+<p  id="Text_Hj3I83-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, </p>
+<p  id="Text_Ac4Q34-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">3</p>
+<p  id="Text_WJTg33-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .</p>
+<p  id="Text_srsYN2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">transparentizeHex</p>
+<p  id="Text_sqmnT3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.black, </p>
+<p  id="Text_artY72-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">0.1</p>
+<p  id="Text_3tu2g3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">)))</p>
+</div>
+</div>
+<div  id="Flex_8z6r62-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_0y4ls2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">48</p>
+<div  id="Flex_ayL4V3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_PWrWg3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_8Ocl81-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">hover</p>
+<p  id="Text_DpDJu-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.{</p>
+</div>
+</div>
+<div  id="Flex_UPscm2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_t8zXc3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">49</p>
+<div  id="Flex_no4Ct1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_Is4RF1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .transform = .</p>
+<p  id="Text_uM7YK4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">scaleDecimal</p>
+<p  id="Text_dgRgW4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_LDXEp-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">1.01</p>
+<p  id="Text_jDbZn-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">),</p>
+</div>
+</div>
+<div  id="Flex_E2LVt-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_0ZM3Q4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">50</p>
+<div  id="Flex_VlqNh-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_GmcEa4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .new_shadow = Vapor.Types.NewShadow.</p>
+<p  id="Text_XajPD2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">init</p>
+<p  id="Text_v0DBr3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">()</p>
+</div>
+</div>
+<div  id="Flex_SOb8s1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_iBAPd2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">51</p>
+<div  id="Flex_Xd9Ax-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_tvxcY-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">                .</p>
+<p  id="Text_DZvtx-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">inset</p>
+<p  id="Text_Frb7O1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_7LI9t3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">0</p>
+<p  id="Text_gql7e-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, -</p>
+<p  id="Text_7WVMB-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">2</p>
+<p  id="Text_QF8Kg3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .</p>
+<p  id="Text_8M1bA1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">transparentizeHex</p>
+<p  id="Text_nmRPm-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.black, </p>
+<p  id="Text_x6LKD2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">0</p>
+<p  id="Text_U0CFg2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">))</p>
+</div>
+</div>
+<div  id="Flex_FGX1T-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_OicU01-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">52</p>
+<div  id="Flex_rjaRq-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_lPFH73-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">                .</p>
+<p  id="Text_AkKQq2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">drop</p>
+<p  id="Text_hAdlE3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_pHKZx-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">0</p>
+<p  id="Text_69ho24-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, </p>
+<p  id="Text_Z8QO44-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">1</p>
+<p  id="Text_0Z8cZ4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, </p>
+<p  id="Text_i5xpU4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">3</p>
+<p  id="Text_VUQ1o-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .</p>
+<p  id="Text_pwpsL3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">transparentizeHex</p>
+<p  id="Text_MHdjS-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.black, </p>
+<p  id="Text_z1tOK1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">0</p>
+<p  id="Text_k09gQ-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">)),</p>
+</div>
+</div>
+<div  id="Flex_ovJG52-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_ZR0r1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">53</p>
+<div  id="Flex_nzNrg1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_QBqI-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        })</p>
+</div>
+</div>
+<div  id="Flex_Vr2rd3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_wDjtN4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">54</p>
+<div  id="Flex_Z5P8E4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_FqqqQ3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_Z8sz44-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">children</p>
+<p  id="Text_f7psh2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">({</p>
+</div>
+</div>
+<div  id="Flex_01DQ62-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_GRoSZ1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">55</p>
+<div  id="Flex_j4qHV3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_e3Qru2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        </p>
+<p  id="Text_lEcsz3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Text</p>
+<p  id="Text_kozkO2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_Ix0As3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Open Menu →"</p>
+<p  id="Text_tAAga2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">)</p>
+</div>
+</div>
+<div  id="Flex_qjkbc-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_Ha5Wz-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">56</p>
+<div  id="Flex_cgnuv-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_YNol71-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .</p>
+<p  id="Text_Ylxir3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">fontFamily</p>
+<p  id="Text_vKg782-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_B9Em9-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_lZfOK ">"Montserrat"</p>
+<p  id="Text_ET1QH-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">)</p>
+</div>
+</div>
+<div  id="Flex_TOI5y2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_9JFNY3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">57</p>
+<div  id="Flex_ppGcE1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_9gZeE1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .</p>
+<p  id="Text_ZhPKn1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">font</p>
+<p  id="Text_HThR71-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_Vpe324-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">16</p>
+<p  id="Text_YLjUx3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, </p>
+<p  id="Text_XhA331-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">300</p>
+<p  id="Text_fRQVu2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">, .</p>
+<p  id="Text_SEhpe-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">palette</p>
+<p  id="Text_S8z281-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.background))</p>
+</div>
+</div>
+<div  id="Flex_t4I8O4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_Q8fYO-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">58</p>
+<div  id="Flex_oyRXQ-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_TGnIG2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">            .</p>
+<p  id="Text_nqH0N1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">end</p>
+<p  id="Text_YGM5C4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">();</p>
+</div>
+</div>
+<div  id="Flex_p4ZHo1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_RhiUA1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">59</p>
+<div  id="Flex_C2Cq43-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_UeJpZ-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    });</p>
+</div>
+</div>
+<div  id="Flex_1gVKX1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_Vou5P-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">60</p>
+<div  id="Flex_oiM8l2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_18PeP4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">}</p>
+</div>
+</div>
+<div  id="Flex_UJY9q1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_LagVS1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">61</p>
+<div  id="Flex_L3sUE4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+<div  id="Flex_e1aCl-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_JOnZy1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">62</p>
+<div  id="Flex_Dsvjb4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_gkAqV-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">pub</p>
+<p  id="Text_JTvGZ3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_2MVjh2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_m2fGV ">fn</p>
+<p  id="Text_1u5y72-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 "> </p>
+<p  id="Text_UdhAT2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">render</p>
+<p  id="Text_V4twM2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">() void {</p>
+</div>
+</div>
+<div  id="Flex_0lMEY4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_REr234-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">63</p>
+<div  id="Flex_lVNbx-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_V1QeD1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    </p>
+<p  id="Text_l9ZQw3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_r8XSQ ">// Render trigger and dropdown separately</p>
+</div>
+</div>
+<div  id="Flex_KEnIK2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_bibUc3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">64</p>
+<div  id="Flex_kH77s2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_yHHeI2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    </p>
+<p  id="Text_TdL0V2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Stack</p>
+<p  id="Text_QJdkX4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">().</p>
+<p  id="Text_DNxii3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">children</p>
+<p  id="Text_OBp53-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">({</p>
+</div>
+</div>
+<div  id="Flex_vkBYY-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_l4BwT1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">65</p>
+<div  id="Flex_yAHR71-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_ooaCP-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        select.</p>
+<p  id="Text_Nqt561-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">renderTrigger</p>
+<p  id="Text_7CTvi-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">();</p>
+</div>
+</div>
+<div  id="Flex_XGAC13-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_TOQsQ3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">66</p>
+<div  id="Flex_cTb4y2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_pYSv72-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    });</p>
+</div>
+</div>
+<div  id="Flex_kBQm42-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_SiA7m1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">67</p>
+<div  id="Flex_ArmZm2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_Mr5j9-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    </p>
+<p  id="Text_SMeub-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_CSqZh3 ">Stack</p>
+<p  id="Text_qUmFM2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">()</p>
+</div>
+</div>
+<div  id="Flex_mtIcD-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_TnhWD2-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">68</p>
+<div  id="Flex_xgy73-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_nAo3e-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_EBTTC3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">width</p>
+<p  id="Text_L4Yih1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.</p>
+<p  id="Text_5HFPj3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">percent</p>
+<p  id="Text_V7sJP4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_RQNOR1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">10</p>
+<p  id="Text_g8gfN4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">))</p>
+</div>
+</div>
+<div  id="Flex_tnGyx3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_pGenE3-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">69</p>
+<div  id="Flex_XWX4H2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_raJQH1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_cxBDL-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">pos</p>
+<p  id="Text_8D17L-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.</p>
+<p  id="Text_beB923-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">tr</p>
+<p  id="Text_W915d2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(.</p>
+<p  id="Text_AKye71-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">px</p>
+<p  id="Text_ncLQ41-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_k4pjf4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">12</p>
+<p  id="Text_QDel73-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">), .</p>
+<p  id="Text_8VM7s2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">px</p>
+<p  id="Text_hcPvR-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">(</p>
+<p  id="Text_hQxTq1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">12</p>
+<p  id="Text_LonkZ2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">), .fixed))</p>
+</div>
+</div>
+<div  id="Flex_usd5f3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_7m8UG4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">70</p>
+<div  id="Flex_MAYY71-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_2ZJLu2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        .</p>
+<p  id="Text_EGrP53-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">children</p>
+<p  id="Text_TuQ3T4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">({</p>
+</div>
+</div>
+<div  id="Flex_3cbGW1-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_UFLHU1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">71</p>
+<div  id="Flex_owl8V3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_6blVO4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">        select.</p>
+<p  id="Text_wASGU1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_aqPMn ">renderSelect</p>
+<p  id="Text_dBWHg-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">();</p>
+</div>
+</div>
+<div  id="Flex_jAKmF2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_TCLmV4-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">72</p>
+<div  id="Flex_c63fL4-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_yClg33-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">    });</p>
+</div>
+</div>
+<div  id="Flex_BOFq71-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_4OgwS1-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">73</p>
+<div  id="Flex_xc7Md3-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+<p  id="Text_7Ea3C3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_4Kz5o2 ">}</p>
+</div>
+</div>
+<div  id="Flex_CaJ8u2-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_I4781-gk" class="lay_OcuwW3 pos_McpnX1 mapa_CrkEb2 vis_KAkby ">74</p>
+<div  id="Flex_H0Dhu-gk" class="lay_Zxl4O4 pos_McpnX1 mapa_t79Oh3 vis_LMp3p2 ">
+</div>
+</div>
+</code>
+</div>
+</div>
+</div>
+<p  id="Text_lHxFp-gk" class="lay_1I8dE4 pos_McpnX1 mapa_sT3Sn vis_aWrp83 ">API Reference</p>
+<p  id="Text_fSm3B-gk" class="lay_1I8dE4 pos_McpnX1 mapa_9SPU2 vis_A8fUz1 ">Initialization</p>
+<p  id="Text_p6Hb03-gk" class="lay_1I8dE4 pos_McpnX1 mapa_0Ngye4 vis_CRb9I2 ">Two ways to create a Select:</p>
+<div  id="Flex_SExnA4-gk" class="lay_AEgkh1 pos_McpnX1 mapa_WM2Wg4 vis_wriXp3 ">
+<p  id="Text_V0F9H3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ABsyC ">// Flat list
+var select = Select(MyEnum).fromItems(&.{ ... });
+
+// Grouped list
+var select = Select(MyEnum).init("Placeholder", &.{
+    Select(MyEnum).Group{ .title = "Group", .items = &.{ ... } },
+});</p>
+</div>
+<p  id="Text_KBrD43-gk" class="lay_1I8dE4 pos_McpnX1 mapa_9SPU2 vis_A8fUz1 ">Item Structure</p>
+<p  id="Text_x5smO-gk" class="lay_1I8dE4 pos_McpnX1 mapa_0Ngye4 vis_CRb9I2 ">Each item requires a value and label. Icon is optional.</p>
+<div  id="Flex_rEJAB3-gk" class="lay_AEgkh1 pos_McpnX1 mapa_WM2Wg4 vis_wriXp3 ">
+<p  id="Text_0pOkA-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ABsyC ">.{ .value = MyEnum.option, .label = "Option Label", .icon = .icon_name }</p>
+</div>
+<p  id="Text_Fae344-gk" class="lay_1I8dE4 pos_McpnX1 mapa_9SPU2 vis_A8fUz1 ">Properties</p>
+<p  id="Text_Ux99d4-gk" class="lay_1I8dE4 pos_McpnX1 mapa_0Ngye4 vis_CRb9I2 ">Configure behavior after initialization.</p>
+<div  id="Flex_XbF7f-gk" class="lay_AEgkh1 pos_McpnX1 mapa_WM2Wg4 vis_wriXp3 ">
+<p  id="Text_QiKOf1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ABsyC ">select.trigger = "Placeholder text";      // Custom placeholder
+select.trigger_component = myFn;          // Custom trigger component
+select.on_select = handleSelect;          // Selection callback</p>
+</div>
+<p  id="Text_pJohU2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_9SPU2 vis_A8fUz1 ">Render Methods</p>
+<p  id="Text_pRJ5y-gk" class="lay_1I8dE4 pos_McpnX1 mapa_0Ngye4 vis_CRb9I2 ">Choose how to render the component.</p>
+<div  id="Flex_w6wAV-gk" class="lay_AEgkh1 pos_McpnX1 mapa_WM2Wg4 vis_wriXp3 ">
+<p  id="Text_SRn952-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ABsyC ">select.render();          // Render trigger + dropdown together
+select.renderTrigger();   // Render trigger only
+select.renderSelect();    // Render dropdown only</p>
+</div>
+<p  id="Text_OnR6n1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_9SPU2 vis_A8fUz1 ">Callback Signature</p>
+<p  id="Text_A1GnJ3-gk" class="lay_1I8dE4 pos_McpnX1 mapa_0Ngye4 vis_CRb9I2 ">The on_select callback receives the select instance and selected item.</p>
+<div  id="Flex_bh5ya4-gk" class="lay_AEgkh1 pos_McpnX1 mapa_WM2Wg4 vis_wriXp3 ">
+<p  id="Text_jCRFz1-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_ABsyC ">fn handleSelect(sel: *Select(MyEnum), item: *Select(MyEnum).Item) void {
+    // item.value - the enum value
+    // item.label - the display string
+    // item.icon  - optional icon
+}</p>
+</div>
+</div>
+</div>
+<div  id="Flex_UC3x-gk" class="lay_dkWnM pos_McpnX1 mapa_SGczd1 vis_aqVpO4 ">
+<div  id="Flex_OSB0Y2-gk" class="lay_E4oUX pos_McpnX1 mapa_CrkEb2 vis_aqVpO4 ">
+<div  id="Flex_EOQUO2-gk" class="lay_RGeLB2 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<button  id="Butt_sKWlP4-gk" class="next-btn">
+<i  id="Flex_51A7I2-gk" class="bi bi-arrow-right btn-icon">
+</i>
+<div  id="Flex_LUY2M3-gk" class="lay_vjLM24 pos_McpnX1 mapa_CrkEb2 vis_EQXTI4 ">
+<p  id="Text_wf5Dt2-gk" class="lay_1I8dE4 pos_McpnX1 mapa_CrkEb2 vis_12Xh2 ">Combobox</p>
+</div>
+</button>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
