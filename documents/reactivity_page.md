@@ -83,42 +83,16 @@ Vapor, is a toolkit, this means that the developer can decide how they want thei
 
 - **Immediate Mode**
 
-- **Retained Mode**
-
 Vapor, has taken the concept of reactivity, and _Inversed It!_
 Instead of defining a reactive variable like `let counter = $state(0);`
 we define our UI as reactive.
-
-There are two types of **State Elements** in Vapor,
-
-- **Static Elements:** will never update!
-
-- **Vapor Elements:** will only update if their styles or props change.
-
-Static Element are best used for either readability, or improving performance.
-
-```zig
-const Vapor = @import("vapor");
-const Static = Vapor.Static;
-const TextField = Vapor.TextField;
-var text: []const u8 = "Inital Text";
-
-pub fn render() void {
-    TextField(.string)
-        .bind(&text)
-        .end();
-
-    Static.Text(text).end(); // This will never update
-    Text(text).end(); // This will update
-}
-```
 
 {#atomic-mode}
 
 ### Atomic Mode
 
 Atomic mode is the default mode of Vapor. It is the simplest mode, if a **User interacts with the UI**, or an **Event is triggered**, like
-`timeout`, `onChange`, `onPress`, `onHover`, `fetch` ect.
+`timeout`, `onChange`, `onClick`, `onHover`, `fetch` ect.
 Vapor will check what is changed and only update the changed elements, ie their props or styles.
 
 **The overhead cost of doing this is minimal, since we are working in WASM.**
@@ -126,14 +100,11 @@ Vapor will check what is changed and only update the changed elements, ie their 
 Atomic mode acts a event engine, where each event into and out of Vapor's engine results in a call to check what is changed, and only update the changed elements.
 
 This accomplishes the majority of the work needed to update and render the UI without any explicit state management. The remaining is handled through
-Explicit State Containers called `Signal(T)` or manually calling `cycle()`.
-
-**Just** because Vapor offers these features, doesn't mean they are needed, both this _Documentation_ site, and _Acorn_, are built using atomic mode, and use no
-`Signal(T)` containers or `cycle()` calls.
+manually calling `cycle()`.
 
 The **Solution** to state management, isn't to solve it all, but to solve **+90%** of the problem.
 
-The remaining **%** is when you want to use a state management system. Because now the user is not interacting and you are not receiving events.
+The remaining **%** is when you want to use a state management system. Because now the user is not interacting and you are not receiving I/O events.
 
 ```zig
 const Vapor = @import("vapor");
@@ -153,7 +124,7 @@ pub fn render() void {
     Text(text).end(); // This will update
 
     // The user interacts with the UI, via a button press
-    Button(increment).children({
+    Button(increment, .{}).children({
         Text("Increment").end();
     });
     Text(counter).end();
@@ -216,31 +187,12 @@ pub fn Home() void {
     Text(text).end(); // This will update
 
     // The user interacts with the UI, via a button press
-    Button(increment).children({
+    Button(increment, .{}).children({
         Text("Increment").end();
     });
     Text(counter).end();
 
 }
-```
-
-{#80-content-is-static}
-
-### 80% of content in an application is static
-
-Most UI elements never change after initial render.
-Vapor optimizes for this reality by exposing `Static`
-elements.
-
-In practice, the only difference between a `Static` `Text` and a `Text` is the import.
-This site, never uses `Static` elements, while Acorn does, this is mainly for readability and maintainability.
-Since most of the documentation site, is made up of Mardown files.
-
-```zig
-const Vapor = @import("vapor");
-const Static = Vapor.Static;
-const Text = Static.Text;
-const Button = Static.Button;
 ```
 
 {#retained-mode}
@@ -280,7 +232,7 @@ pub fn increment() void {
 }
 
 pub fn render() void {
-    Button(increment).children({
+    Button(increment, .{}).children({
         Text("Increment").end();
     });
     TextFmt("I am a counter: {d}", .{counter}).end(); // Only this updates
@@ -348,7 +300,7 @@ const Counter = struct {
     }
 
     pub fn render(counter: *Counter) void {
-        Static.ButtonCtx(increment, .{counter}).end()({
+        Static.Button(increment, .{counter}).end()({
             TextFmt("I am a counter: {d}", .{counter.count.get()}).end(); // This updates
         });
     }
@@ -474,7 +426,7 @@ pub fn increment() void {
 }
 
 pub fn render() void {
-    Button(increment).children({
+    Button(increment, .{}).children({
         Text("Increment the Global Counter").end();
     });
 }

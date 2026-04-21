@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="/assets/css/bootstrap-icons.css" />
   </noscript>
   <script type="module" src="/web/bundle.min.js"></script>
+  <!-- <script type="module" src="/web/wasi_obj.js"></script> -->
 
   <style>
     body {
@@ -169,7 +170,6 @@
 <p  id="Html_7TZ6B2-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_O7nKQ "><strong>Vapor, Reverb, Canopy</strong> all run on Metal, there 
 is no need for Docker Containers or
 Runtimes.</p>
-
 </div>
 </div>
 <div  id="Flex_a3iT2-gk" class="lay_Xjgb34 pos_e8wtf3 mapa_WshOF vis_SWFkJ2 ">
@@ -199,10 +199,8 @@ Runtimes.</p>
 <p  id="Html_D7eoD1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">As we all know, switching machines, or having to reinstall megabytes of dependencies is a pain,
 and eventually leads to the dreaded "It works on my machine" problem. 
 Running a static blog shouldn’t require an entire runtime environment, build chain, and container stack. Nor should a full-stack app.</p>
-
 <p  id="Html_n7g7N1-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">The framework that is installed on one machine should run deterministically on another.
 Every current JS framework or other framework currently ships dependencies. And there is no way to avoid them.</p>
-
 <p  id="Text_9ruKo3-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_sZTeW3 ">Binary</p>
 <p  id="Html_er1ln2-gk" class="lay_jXzf62 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">Metal is how Vapor, Reverb and Canopy, compile and build the binaries. Depending on persmissions,
 Vapor will use wasm-opt and brotli, to compress the WASM binaries, this will reduce the total bundle size. For example, the raw
@@ -210,7 +208,6 @@ WASM binary of this site it 7MB, after compressing using Metal, we result in 180
 Remember Vapor, is running WASM, so the browser not only parses this <a href="https://webassembly.org/docs/faq/">10x-20x</a> 
 faster, but also runs <a href="https://hacks.mozilla.org/2018/01/oxidizing-source-maps-with-rust-and-webassembly/">1.5x-2x</a> faster.
 And again, we only have one binary file running the Vapor server, and one vapor.wasm file which contains our UI, and client side functionality.</p>
-
 <div  id="Flex_rosp52-gk" class="lay_EV1UJ4 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 ">
 <p  id="Text_TCfgp-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_sZTeW3 ">Total file count</p>
 <ul  id="List_ykkCi1-gk" class="lay_PNZMO3 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 ">
@@ -233,16 +230,13 @@ hundreds of nanoseconds up to a few milliseconds, because of size. You pay for t
 However, WASM is contionously being improved and changed, in the next year or so, a new model will be release, where no copying will be needed.
 And you will be able to interact with JS string and object without the need of crossing a 'bridge' ie negligible cost.
 One very simple way to not cross this boundary a ton, is just batch. Vapor does this by default. </p>
-
 </div>
 <div  id="Flex_ZrWQO-gk" class="lay_EV1UJ4 pos_e8wtf3 mapa_CrkEb2 vis_SWFkJ2 ">
 <h1  id="Head_UAmdI-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_w2tSd1 ">Commands
 </h>
 <p  id="Html_qAqXE4-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">Metal is a CLI tool, and it has a lot of commands. 
 You can run <code>metal --help</code> to see all the commands.</p>
-
 <p  id="Html_Chy9v2-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">Every command is run within the current directory. You can specify a output path with the <code>-o</code> flag.</p>
-
 <button  id="CtxB_Vj0lq1-gk" class="lay_Eehab1 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
 <p  id="Text_kesWv2-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">metal -v gen Grid -o /components/MyGrid.zig</p>
 <div  id="Flex_HtkV83-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
@@ -259,13 +253,11 @@ You can run <code>metal --help</code> to see all the commands.</p>
 </button>
 <p  id="Html_1xB4H3-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">Metal differentiates between Vapor, Reverb, and Canopy, with -v, -r, and -c flags.
 After this, you can run various generation commands, like <code>metal -v create my-app</code> or <code>metal -v gen DataTable</code>.</p>
-
 <h2  id="Head_XRqed3-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_Gq5qa3 ">Vapor Gen Command
 </h>
 <p  id="Html_q7Pux3-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">When passing the <cod>gen</code> command, we can generate various component types, like <code>DataTable</code>.
 We can also generate Form components, based on a struct argument. For example, Vaporize can be used to generate the base Form UI, and then
 one can mutate the styles, or add custom logic. This is useful for rapid prototyping.</p>
-
 <button  id="CtxB_ySBSs2-gk" class="lay_Eehab1 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
 <p  id="Text_gormn-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">metal -v gen Select</p>
 <div  id="Flex_WWdNw1-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
@@ -290,7 +282,6 @@ one can mutate the styles, or add custom logic. This is useful for rapid prototy
 <h2  id="Head_MRncn1-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_Gq5qa3 ">Reverb Gen Command
 </h>
 <p  id="Html_XmdMk2-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">We follow the same pattern as Vapor, with Reverb, we can generate cruds, routes, auth, and more.</p>
-
 <button  id="CtxB_LrBbr-gk" class="lay_Eehab1 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
 <p  id="Text_0CY63-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">metal -r gen Crud</p>
 <div  id="Flex_igtGn1-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
@@ -308,7 +299,6 @@ one can mutate the styles, or add custom logic. This is useful for rapid prototy
 <h2  id="Head_kEJVf-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_Gq5qa3 ">Release & Deployment Commands
 </h>
 <p  id="Html_B5GQ6-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">We can release with Metal, via:</p>
-
 <button  id="CtxB_AUpHF-gk" class="lay_Eehab1 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
 <p  id="Text_kkNP34-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">metal -v release-mode={debug|fast|small}</p>
 <div  id="Flex_OWcLY-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">
@@ -332,12 +322,9 @@ one can mutate the styles, or add custom logic. This is useful for rapid prototy
 </button>
 <p  id="Html_eqj3H1-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">This will generate various types of files, based on the mode. For Vapor specifically, release-mode small and fast, will run the wasm-opt and brotli commands.
 This will further compress the WASM binary, reaching an average 40x reduction in size.</p>
-
 <p  id="Html_8OO711-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">Vapor's server runs on Reverb, and so we get all the performance benefits of Reverb, by default.</p>
-
 <p  id="Html_nAqka2-gk" class="lay_1I8dE4 pos_e8wtf3 mapa_CrkEb2 vis_v0u3o2 ">Vapor also takes the <code>pre-gen</code> command, which at build time, will generate a static HTML files, and serve them on initial request, 
 then following up with the WASM binary, this improves the first paint time, and reduces the time to first byte.</p>
-
 <button  id="CtxB_zfbk43-gk" class="lay_Eehab1 pos_t0s233 mapa_rPfvm1 vis_eCn7p intr_e4HPO4 ">
 <p  id="Text_c4t4F4-gk" class="lay_jizS31 pos_e8wtf3 mapa_CrkEb2 vis_4PFjZ1 ">metal -v release-mode=small pre-gen</p>
 <div  id="Flex_ykQcd2-gk" class="lay_ZaWBU4 pos_e8wtf3 mapa_CrkEb2 vis_zigIJ3 ">

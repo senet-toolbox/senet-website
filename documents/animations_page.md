@@ -20,6 +20,9 @@ const bounce_animation = Animation.init("bounce")
 
 
 fn init() void {
+    // We must iniatilize the Animation system, before we can build animations
+    // We only need to do this once
+    Animation.new();
     bounce_animation.build();
 }
 ```
@@ -37,7 +40,7 @@ This means you **must** call `.build()` within and init function ie runtime, you
 ```zig
 const Vapor = @import("vapor");
 const Animation = Vapor.Animation;
-const Box = Vapor.Box;
+const Row = Vapor.Row;
 const Text = Vapor.Text;
 
 const fadeIn = Animation.init("fadeIn")
@@ -46,13 +49,14 @@ const fadeIn = Animation.init("fadeIn")
         .fill(.forwards);
 
 fn init() void {
+    Animation.new();
     // now we can build animations
     fadeIn.build();
 }
 
 fn render() void {
     // use it on any element
-    Box().animationEnter("fadeIn").children({
+    Row().animationEnter("fadeIn").children({
         Text("hello world!").end();
     });
 }
@@ -88,6 +92,7 @@ const fadeIn: Animation = Animation.init("fadeIn")
     .fill(.forwards);
 
 fn init() void {
+    Animation.new();
     // build at runtime
     spinner.build();
     fadeIn.build();
@@ -147,6 +152,7 @@ const growIn = Animation.init("growIn")
 
 
 export fn init() void {
+    Animation.new();
     fadeIn.build();
     slideIn.build();
     growIn.build();
@@ -288,6 +294,7 @@ const glitch = Animation.init("glitch")
     .infinite();
 
 fn init() void {
+    Animation.new();
     glitch.build();
 }
 ```
@@ -418,7 +425,7 @@ when an element with an exit animation is removed, Vapor automatically:
 ```zig
 const Vapor = @import("vapor");
 const Animation = Vapor.Animation;
-const Box = Vapor.Box;
+const Row = Vapor.Row;
 const Text = Vapor.Text;
 
 // define as constants
@@ -437,6 +444,7 @@ const anim_exit = Animation.init("toast-exit")
     .fill(.forwards);
 
 export fn init() void {
+    Animation.new();
     anim_enter.build();
     anim_exit.build();
     Vapor.page(.{ .route = "/" }, render, null);
@@ -444,7 +452,7 @@ export fn init() void {
 
 fn render() void {
     // use animation pointers for enter/exit
-    Box()
+    Row()
         .animationEnter("toast-enter")
         .animationExit("toast-exit")
         .children({
@@ -462,11 +470,11 @@ use the `.transition()` builder method to define which properties should animate
 
 ```zig
 const Vapor = @import("vapor");
-const Box = Vapor.Box;
+const Row = Vapor.Row;
 const Text = Vapor.Text;
 
 fn render() void {
-    Box()
+    Row()
         .transition(.{
             .properties = &.{ .top, .scale, .opacity, .transform },
             .duration = 200,
@@ -501,7 +509,7 @@ Here's a complete example showing various animation techniques:
 ```zig
 const Vapor = @import("vapor");
 const Animation = Vapor.Animation;
-const Box = Vapor.Box;
+const Row = Vapor.Row;
 const Text = Vapor.Text;
 const Button = Vapor.Button;
 const Center = Vapor.Center;
@@ -537,6 +545,7 @@ const buttonHover = Animation.init("buttonHover")
     .easing(.easeOut);
 
 export fn init() void {
+    Animation.new();
     // register all animations (requires allocator from Vapor.init)
     modalIn.build();
     modalOut.build();
@@ -559,7 +568,7 @@ fn render() void {
         });
 
         if (show_modal) {
-            Box()
+            Row()
                 .animationEnter("modalIn")
                 .animationExit("modalOut")
                 .background(.white)
@@ -582,6 +591,7 @@ fn render() void {
 
 | method                           | description                                |
 | -------------------------------- | ------------------------------------------ |
+| `new()`                          | create a new Animation system              |
 | `init(name)`                     | create a new animation with the given name |
 | `prop(type, from, to)`           | add a property to animate                  |
 | `propUnit(type, from, to, unit)` | add a property with custom unit            |
@@ -621,7 +631,7 @@ fn render() void {
 
 ## Best Practices
 
-1. **call Vapor.init() first** - `.build()` requires the internal allocator, so always initialize Vapor before building animations
+1. **call Vapor.init() and Animation.new() first** - `.build()` requires the internal allocator, so always initialize Vapor and Animation before building animations
 
 2. **define animations as constants** - declare animations at file scope, then call `.build()` in your init function
 
@@ -640,7 +650,7 @@ fn render() void {
 ```zig
 const Vapor = @import("vapor");
 const Animation = Vapor.Animation;
-const Box = Vapor.Box;
+const Row = Vapor.Row;
 const Text = Vapor.Text;
 
 // ✅ good - define as constants at file scope
@@ -655,6 +665,8 @@ const fadeOut = Animation.init("fadeOut")
     .fill(.forwards);
 
 fn init() void {
+    Vapor.init(.{});
+    Animation.new();
     // ✅ build after Vapor.init
     fadeIn.build();
     fadeOut.build();
@@ -664,7 +676,7 @@ fn init() void {
 
 fn render() void {
     // ✅ use pointer for animationEnter/Exit
-    Box()
+    Row()
         .animationEnter("fadeIn")
         .animationExit("fadeOut")
         .children({
@@ -679,12 +691,13 @@ const Animation = Vapor.Animation;
 // ❌ bad - could forget to set the animation, leading to undefined behavior
 var animation: Animation = undefined;
 fn init() void {
+    // ❌ bad - Forgot to use Animation.new() first
     animation = Animation.init("fade").prop(.opacity, 0, 1).build(); // crash! no allocator yet
 }
 
 // ❌ bad - building inside render
 fn render() void {
     Animation.init("fade").build(); // don't do this! builds every frame
-    Box().animation("fade").children({ ... });
+    Row().animation("fade").children({ ... });
 }
 ```

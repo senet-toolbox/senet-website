@@ -28,7 +28,7 @@ var counter: u32 = 0;
 fn increment() void {  counter += 1;  }
 
 fn Home() void {
-    Button(increment).children({
+    Button(increment, .{}).children({
         Text("Increment").end();
     });
     Text(counter).end();
@@ -122,7 +122,7 @@ fn increment() void { counter += 1; }
 
 fn render() void {
     var temp: usize = 0;  // ❌ Resets every render
-    Button(increment).children({
+    Button(increment, .{}).children({
         Text(counter).end();
         Text(temp).end();
     });

@@ -84,14 +84,14 @@ pub fn render() void {
         Text("hello there!")
             .hoverScale()
             .font(24, 700, .blue)
-            .close();
+            .end();
         Text("...")
             .font(18, 700, .black)
-            .close();
+            .end();
         Text("general kenobi")
             .fontStyle(.italic)
             .font(24, 700, .red)
-            .close();
+            .end();
     });
 }
 ```
@@ -173,12 +173,11 @@ when using a Style struct, the syntax changes slightly:
 
 ```zig
 // builder chain → .children({})
-Button(click).padding(.all(8)).children({
+Button(click, .{}).padding(.all(8)).children({
     Text("click").end();
 });
 
-// style struct → direct block ({})
-Button(click).style(&button_style)({
+Button(click, .{}).style(&button_style).children({
     Text("click").end();
 });
 
@@ -192,19 +191,8 @@ const button_style = Vapor.Style{
 
 we are taking a reference to the `button_style` variable, and passing it to the `.style()` function.
 
-#### note on style vs children
-
-**why?** `.style()` returns a different type that takes the children block directly. just remember:
-
-- `.children({...})` after builder chains
-- `({...})` after `.style(&style)`
-
 ```zig
-ButtonCtx(clicked, .{12}).style(&button_style)({ // ✅ Correct
-    Text("click").end();
-});
-
-ButtonCtx(clicked, .{12}).style(&button_style).children({ // ❌ Incorrect, cannot use children after style
+Button(clicked, .{12}).style(&button_style).children({ // ✅ Correct
     Text("click").end();
 });
 ```
@@ -224,13 +212,8 @@ Box().children({ ... });
 Center().children({ ... });
 Stack().children({ ... });
 List().children({ ... });
-Button(fn).children({ ... });
+Button(fn, args).children({ ... });
 Link(.{ .url = "/" }).children({ ... });
-
-// with style struct - use ({})
-// ❌ Cannot use children({}) after style
-Box().style(&my_style)({ ... });
-ButtonCtx(fn, .{}).style(&btn_style)({ ... });
 ```
 
 ```zig
@@ -243,16 +226,16 @@ pub fn render() void {
         },
     };
 
-    Box.style(text_style)({
-        Text("hello there!").style(text_style);
+    Box.style(text_style).children({
+        Text("hello there!").style(text_style).end();
         Text("...").style(&.{
             .visual = .{
                 .font_size = 18,
                 .font_weight = 700,
                 .text_color = .black,
             },
-        });
-        Text("general kenobi").style(text_style);
+        }).end();
+        Text("general kenobi").style(text_style).end();
     });
 }
 ```
@@ -405,21 +388,21 @@ fn samples() void {
             .font(48, 700, .white).fontFamily("montserrat").end();
     });
 
-    Box().style(&common_style)({
+    Box().style(&common_style).children({
         Text("top right text").fontSize(14).end();
     });
 
     // here we use the basestyle, now we can override the default style
-    Box().baseStyle(&common_style).layout(.top_left).children({
+    Box().style(&common_style).layout(.top_left).children({
         Text("top left text").fontSize(14).end();
     });
 
-    Button(clicked).style(&pill_button_base)({
+    Button(clicked).style(&pill_button_base).children({
         Text("click me").fontSize(18).end();
     });
 
     // here we merge the pill style,
-    Button(clicked).style(&mergedStyle())({
+    Button(clicked).style(&mergedStyle()).children({
         Text("click me").fontSize(18).end();
     });
 }

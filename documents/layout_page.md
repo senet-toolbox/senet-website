@@ -57,8 +57,3 @@ pub fn layoutAbout(page: Vapor.PageFn) void {
 
 Now when we navigate to `/app/about`, the layout will be reset, and the About component will render. And the Navbar will not.
 If we were to remove the `.reset` field, then the About component would render within the Navbar layout.
-
-By default, Vapor will rerender and, mark all nodes as dirty when the route changes. This is not costly, there is no need to memoize.
-This is because reloads should cause a full rerender and call to the server. State will persist, across all route changes, by default.
-
-Reloads, will cause state to be reset, and Vapor will treat the route as fresh.
